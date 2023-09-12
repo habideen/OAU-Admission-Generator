@@ -3,6 +3,8 @@
 use App\Http\Controllers\API\V1\Auth\LoginController;
 use App\Http\Controllers\API\V1\Auth\RegisterController;
 use App\Http\Controllers\API\V1\Auth\UserManagementController;
+use App\Http\Controllers\API\V1\CourseController;
+use App\Http\Controllers\API\V1\SubjectController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +34,12 @@ Route::middleware(['api_v1', 'auth:sanctum'])
         Route::post('enable_user', [UserManagementController::class, 'disableOrEnable']);
         Route::post('delete_user', [UserManagementController::class, 'delete']);
         Route::get('list_users', [UserManagementController::class, 'listUsers']);
+
+        //course
+        Route::post('subject/add', [SubjectController::class, 'add']);
+
+        //course
+        Route::post('course/add', [CourseController::class, 'add']);
     });
 
 
