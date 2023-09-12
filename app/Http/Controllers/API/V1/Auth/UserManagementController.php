@@ -43,7 +43,48 @@ class UserManagementController extends Controller
 
         return response([
             'status' => 'failed',
-            'message' => 'We could not precess your request. Please try again'
+            'message' => 'We could not precess your request. Please try again.'
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
     } // disableOrEnable
+
+
+
+    public function delete(Request $request)
+    {
+        if (!isPassword($request->password)) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Invalid password. Please try again.'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if (!User::where('email', $request->email)->first()) {
+            return response([
+                'status' => 'success',
+                'message' => 'Email is invalid.'
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+        if (User::where('email', $request->email)->delete()) {
+            return response([
+                'status' => 'success',
+                'message' => 'User deleted successfully.'
+            ], Response::HTTP_OK);
+        }
+
+        return response([
+            'status' => 'failed',
+            'message' => 'We could not precess your request. Please try again.'
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    } //delete
+
+
+
+    public function listUsers(Request $request)
+    {
+        $pag = $request->pagination && ctype_digit($request->pagination) ? $request->pagination : PAGINATION;
+        
+        $users = User::paginate($pag);
+        
+    } //listUsers
 }

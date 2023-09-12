@@ -30,6 +30,8 @@ Route::middleware(['api_v1', 'auth:sanctum'])
         Route::post('register', [RegisterController::class, 'register']);
         Route::post('disable_user', [UserManagementController::class, 'disableOrEnable']);
         Route::post('enable_user', [UserManagementController::class, 'disableOrEnable']);
+        Route::post('delete_user', [UserManagementController::class, 'delete']);
+        Route::get('list_users', [UserManagementController::class, 'listUsers']);
     });
 
 
