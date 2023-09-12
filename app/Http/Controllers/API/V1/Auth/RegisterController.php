@@ -12,15 +12,23 @@ use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    public function register(Request $request, $isWeb = false)
+    public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'title' => ['nullable', Rule::in(['Prof', 'Dr', 'Mrs', 'Mr', 'Miss'])],
             'last_name' => ['required', 'min:2', 'max:30', 'regex:/^[a-zA-Z\- ]{2,30}$/'],
             'first_name' => ['required', 'min:2', 'max:30', 'regex:/^[a-zA-Z\- ]{2,30}$/'],
             'middle_name' => ['nullable', 'min:2', 'max:30', 'regex:/^[a-zA-Z\- ]{2,30}$/'],
-            'phone_1' => ['nullable', 'min:11', 'max:11', 'regex:/^[0][7-9][0-9]{9,9}$/'],
-            'phone_2' => ['nullable', 'min:11', 'max:11', 'regex:/^[0][7-9][0-9]{9,9}$/'],
+            'phone_1' => [
+                'nullable', 'min:11', 'max:11', 'regex:/^[0][7-9][0-9]{9,9}$/',
+                Rule::unique('users'),
+                Rule::unique('users', 'phone_2'),
+            ],
+            'phone_2' => [
+                'nullable', 'min:11', 'max:11', 'regex:/^[0][7-9][0-9]{9,9}$/',
+                Rule::unique('users'),
+                Rule::unique('users', 'phone_1'),
+            ],
             'email' => ['required', 'email', 'unique:users,email'],
             'account_type' => ['required', Rule::in(['Admin', 'Dean'])]
             //default password is surname
