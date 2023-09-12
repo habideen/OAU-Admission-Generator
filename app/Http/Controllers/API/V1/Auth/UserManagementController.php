@@ -83,8 +83,25 @@ class UserManagementController extends Controller
     public function listUsers(Request $request)
     {
         $pag = $request->pagination && ctype_digit($request->pagination) ? $request->pagination : PAGINATION;
+
+        if ($request->account_type && in_array($request->account_type, USER_TYPE)) {
+            $users = User::where('account_type', $request->account_type);
+        } else {
+            $users = User::whereNotNull('created_at');
+        }
+
+        if ($request->account_disabled && $request->account_disabled == '1') {
+            $users = User::where('account_disabled', 1);
+        }
+
         
-        $users = User::paginate($pag);
-        
+
+        $users = $users->paginate($pag);
+
+        return response([
+            'status' => 'success',
+            'message' => 'Retrieved successfully',
+            'users' => $users
+        ]);
     } //listUsers
 }
