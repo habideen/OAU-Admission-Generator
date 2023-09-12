@@ -21,7 +21,7 @@ class UserManagementController extends Controller
         if (!User::where('email', $request->email)->first()) {
             return response([
                 'status' => 'success',
-                'message' => 'Email is invalid.'
+                'message' => 'Email does not exist.'
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
@@ -61,7 +61,7 @@ class UserManagementController extends Controller
         if (!User::where('email', $request->email)->first()) {
             return response([
                 'status' => 'success',
-                'message' => 'Email is invalid.'
+                'message' => 'Email does not exist.'
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
@@ -90,11 +90,13 @@ class UserManagementController extends Controller
             $users = User::whereNotNull('created_at');
         }
 
-        if ($request->account_disabled && $request->account_disabled == '1') {
+        if ($request->status && $request->status == 'enabled') {
+            $users = User::where('account_disabled', null);
+        } elseif ($request->status && $request->status == 'disabled') {
             $users = User::where('account_disabled', 1);
         }
 
-        
+
 
         $users = $users->paginate($pag);
 

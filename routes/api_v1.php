@@ -29,14 +29,20 @@ Route::post('login', [LoginController::class, 'login']);
 Route::middleware(['api_v1', 'auth:sanctum'])
     ->prefix('superadmin')
     ->group(function () {
-        Route::post('register', [RegisterController::class, 'register']);
-        Route::post('disable_user', [UserManagementController::class, 'disableOrEnable']);
-        Route::post('enable_user', [UserManagementController::class, 'disableOrEnable']);
-        Route::post('delete_user', [UserManagementController::class, 'delete']);
-        Route::get('list_users', [UserManagementController::class, 'listUsers']);
+        Route::post('user/register', [RegisterController::class, 'register']);
+        Route::post('user/disable', [UserManagementController::class, 'disableOrEnable']);
+        Route::post('user/enable', [UserManagementController::class, 'disableOrEnable']);
+        Route::delete('user/delete', [UserManagementController::class, 'delete']);
+        Route::get('user/list', [UserManagementController::class, 'listUsers']);
 
         //course
-        Route::post('subject/add', [SubjectController::class, 'add']);
+        Route::prefix('subject')
+            ->group(function () {
+                Route::post('add', [SubjectController::class, 'add']);
+                Route::post('edit', [SubjectController::class, 'edit']);
+                Route::get('list', [SubjectController::class, 'list']);
+                Route::delete('delete', [SubjectController::class, 'delete']);
+            });
 
         //course
         Route::post('course/add', [CourseController::class, 'add']);

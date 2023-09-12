@@ -15,6 +15,8 @@ return new class extends Migration
             $table->string('subject_code', 3);
             $table->string('subject', 100);
             $table->timestamps();
+
+            $table->primary('subject_code');
         });
     }
 
