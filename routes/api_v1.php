@@ -28,8 +28,8 @@ Route::middleware(['api_v1', 'auth:sanctum'])
     ->prefix('superadmin')
     ->group(function () {
         Route::post('register', [RegisterController::class, 'register']);
-        Route::post('disable_user', [UserManagementController::class, 'disable']);
-        Route::post('register', [RegisterController::class, 'register']);
+        Route::post('disable_user', [UserManagementController::class, 'disableOrEnable']);
+        Route::post('enable_user', [UserManagementController::class, 'disableOrEnable']);
     });
 
 

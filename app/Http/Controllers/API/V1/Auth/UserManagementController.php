@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 
 class UserManagementController extends Controller
 {
-    public function disable(Request $request)
+    public function disableOrEnable(Request $request)
     {
         if (!isPassword($request->password)) {
             return response([
@@ -18,16 +18,32 @@ class UserManagementController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        if (User::where('id', $request->email)->update(['account_disabled' => 1])) {
+        if (!User::where('email', $request->email)->first()) {
             return response([
                 'status' => 'success',
-                'message' => 'User disabled successfully'
-            ], Response::HTTP_OK);
+                'message' => 'Email is invalid.'
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+        if ($request->disable) {
+            if (User::where('email', $request->email)->update(['account_disabled' => 1])) {
+                return response([
+                    'status' => 'success',
+                    'message' => 'User disabled successfully.'
+                ], Response::HTTP_OK);
+            }
+        } elseif ($request->enable) {
+            if (User::where('email', $request->email)->update(['account_disabled' => null])) {
+                return response([
+                    'status' => 'success',
+                    'message' => 'User enabled successfully.'
+                ], Response::HTTP_OK);
+            }
         }
 
         return response([
             'status' => 'failed',
-            'message' => 'User could not be disabled'
+            'message' => 'We could not precess your request. Please try again'
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
-    } // disable
+    } // disableOrEnable
 }
