@@ -15,14 +15,16 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('Faculty');
             $table->string('course');
-            $table->string('subject_1', 3);
-            $table->string('subject_2', 3);
-            $table->string('subject_3', 3);
-            $table->string('subject_4', 3);
-            $table->string('subject_5', 3);
-            $table->string('subject_6', 3);
-            $table->string('subject_7', 3);
-            $table->string('subject_8', 3);
+            $table->string('subject_code_1', 3)->default();
+            $table->string('subject_code_2', 3)->default();
+            $table->string('subject_code_3', 3)->default();
+            $table->string('subject_code_4', 3)->default();
+            $table->string('subject_code_5', 3)->default();
+            $table->string('subject_code_6', 3)->default();
+            $table->string('subject_code_7', 3)->default();
+            $table->string('subject_code_8', 3)->default();
+            $table->string('disabled', 1)->default();
+            $table->unsignedBigInteger('session');
             $table->timestamps();
         });
     }
