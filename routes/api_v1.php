@@ -67,6 +67,7 @@ Route::middleware(['api_v1', 'auth:sanctum'])
         Route::prefix('course')
             ->group(function () {
                 Route::post('add', [CourseController::class, 'add']);
+                Route::post('edit', [CourseController::class, 'edit']);
             });
     });
 
