@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('subject_code_6', 3)->default();
             $table->string('subject_code_7', 3)->default();
             $table->string('subject_code_8', 3)->default();
+            $table->string('session_updated', 9);
             $table->timestamps();
         });
     }

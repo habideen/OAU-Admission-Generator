@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
-class Session extends Controller
+class SessionController extends Controller
 {
     private function loadSession(Request $request)
     {

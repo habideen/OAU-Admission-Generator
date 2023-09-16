@@ -4,7 +4,8 @@ use App\Http\Controllers\API\V1\Auth\LoginController;
 use App\Http\Controllers\API\V1\Auth\RegisterController;
 use App\Http\Controllers\API\V1\Auth\UserManagementController;
 use App\Http\Controllers\API\V1\CourseController;
-use App\Http\Controllers\API\V1\Session;
+use App\Http\Controllers\API\V1\FacultyController;
+use App\Http\Controllers\API\V1\SessionController;
 use App\Http\Controllers\API\V1\SubjectController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,13 +49,25 @@ Route::middleware(['api_v1', 'auth:sanctum'])
         //course
         Route::prefix('session')
             ->group(function () {
-                Route::post('set', [Session::class, 'set']);
-                Route::get('get/all', [Session::class, 'getAll']);
-                Route::get('get/active', [Session::class, 'getActive']);
+                Route::post('set', [SessionController::class, 'set']);
+                Route::get('get/all', [SessionController::class, 'getAll']);
+                Route::get('get/active', [SessionController::class, 'getActive']);
             });
 
         //course
-        Route::post('course/add', [CourseController::class, 'add']);
+        Route::prefix('faculty')
+            ->group(function () {
+                Route::post('add', [FacultyController::class, 'add']);
+                Route::post('edit', [FacultyController::class, 'edit']);
+                Route::get('list', [FacultyController::class, 'list']);
+                Route::delete('delete', [FacultyController::class, 'delete']);
+            });
+
+        //course
+        Route::prefix('course')
+            ->group(function () {
+                Route::post('add', [CourseController::class, 'add']);
+            });
     });
 
 
