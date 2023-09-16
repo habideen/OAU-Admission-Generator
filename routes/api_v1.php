@@ -68,6 +68,7 @@ Route::middleware(['api_v1', 'auth:sanctum'])
             ->group(function () {
                 Route::post('add', [CourseController::class, 'add']);
                 Route::post('edit', [CourseController::class, 'edit']);
+                Route::get('list', [CourseController::class, 'list']);
             });
     });
 

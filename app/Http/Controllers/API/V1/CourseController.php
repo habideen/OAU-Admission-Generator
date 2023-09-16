@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\SubjectCombination;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -368,6 +369,57 @@ class CourseController extends Controller
             'message' => 'Course updated successfully'
         ], Response::HTTP_CREATED);
     } //edit
+
+
+
+    public function list(Request $request)
+    {
+        $pag = $request->pagination && ctype_digit($request->pagination) ? $request->pagination : PAGINATION;
+
+        $courses = DB::table('courses')
+            ->select(
+                'courses.id AS course_id',
+                'courses.course',
+                'faculties.faculty',
+                'sub_1.subject AS subject_1',
+                'sub_2.subject AS subject_2',
+                'sub_3.subject AS subject_3',
+                'sub_4.subject AS subject_4',
+                'sub_5.subject AS subject_5',
+                'sub_6.subject AS subject_6',
+                'sub_7.subject AS subject_7',
+                'sub_8.subject AS subject_8',
+                'subject_combinations.session_updated',
+                'courses.created_at',
+                'subject_combinations.updated_at'
+            )
+            ->join('faculties', 'faculties.id', '=', 'courses.faculty_id')
+            ->join('subject_combinations', function ($join) {
+                $join->on('courses.id', '=', 'subject_combinations.course_id')
+                    ->whereRaw(
+                        'subject_combinations.created_at = (select MAX(created_at) 
+                        FROM 
+                            subject_combinations AS sc 
+                        WHERE 
+                            sc.course_id = subject_combinations.course_id)'
+                    );
+            })
+            ->leftJoin('subjects AS sub_1', 'sub_1.subject_code', '=', 'subject_combinations.subject_code_1')
+            ->leftJoin('subjects AS sub_2', 'sub_2.subject_code', '=', 'subject_combinations.subject_code_2')
+            ->leftJoin('subjects AS sub_3', 'sub_3.subject_code', '=', 'subject_combinations.subject_code_3')
+            ->leftJoin('subjects AS sub_4', 'sub_4.subject_code', '=', 'subject_combinations.subject_code_4')
+            ->leftJoin('subjects AS sub_5', 'sub_5.subject_code', '=', 'subject_combinations.subject_code_5')
+            ->leftJoin('subjects AS sub_6', 'sub_6.subject_code', '=', 'subject_combinations.subject_code_6')
+            ->leftJoin('subjects AS sub_7', 'sub_7.subject_code', '=', 'subject_combinations.subject_code_7')
+            ->leftJoin('subjects AS sub_8', 'sub_8.subject_code', '=', 'subject_combinations.subject_code_8')
+            ->paginate($pag);
+
+        return response([
+            'status' => 'success',
+            'message' => 'Retrieved successfully',
+            'courses' => $courses
+        ]);
+    } //list
 }
 
 
