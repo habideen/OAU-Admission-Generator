@@ -12,8 +12,7 @@ class CourseController extends Controller
     public function add(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'subject_code' => ['required', 'string', 'min:3', 'max:3', 'exist:subjects,subject_code']
-            //default password is surname
+            'course' => ['required', 'string', 'min:3', 'max:3', 'exist:subjects,subject_code']
         ]);
 
         if ($validator->fails()) {
@@ -25,3 +24,12 @@ class CourseController extends Controller
         }
     } //add
 }
+
+
+/**
+ * Add course
+ * get last course before it
+ * get the subject combination id
+ * use for this
+ * 
+ */
