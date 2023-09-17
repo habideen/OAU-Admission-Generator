@@ -420,13 +420,48 @@ class CourseController extends Controller
             'courses' => $courses
         ]);
     } //list
+
+
+
+
+    public function delete(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'course_id' => ['required', 'integer', 'exists:courses,id']
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Invalid input submitted',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+        /**
+         * TODO
+         * check if a course has selected it before deleting
+         */
+
+        $delete = SubjectCombination::where('course_id', $request->course_id)->delete();
+        if (!$delete) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Server error!'
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
+
+        $delete = Course::where('id', $request->course_id)->delete();
+
+        if (!$delete) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Server error! Partially deleted course. Please try again.'
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
+
+        return response([
+            'status' => 'success',
+            'message' => 'Course deleteted successfully'
+        ], Response::HTTP_CREATED);
+    } //delete
 }
-
-
-/**
- * Add course
- * get last course before it
- * get the subject combination id
- * use for this
- * 
- */

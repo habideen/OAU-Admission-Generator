@@ -131,7 +131,7 @@ class SubjectController extends Controller
 
         return response([
             'status' => 'success',
-            'message' => 'Subject delteted successfully'
+            'message' => 'Subject deleteted successfully'
         ], Response::HTTP_CREATED);
     } //delete
 }

@@ -69,6 +69,7 @@ Route::middleware(['api_v1', 'auth:sanctum'])
                 Route::post('add', [CourseController::class, 'add']);
                 Route::post('edit', [CourseController::class, 'edit']);
                 Route::get('list', [CourseController::class, 'list']);
+                Route::delete('delete', [CourseController::class, 'delete']);
             });
     });
 
