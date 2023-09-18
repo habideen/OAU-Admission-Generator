@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\V1\AdmissionController;
 use App\Http\Controllers\API\V1\Auth\LoginController;
 use App\Http\Controllers\API\V1\Auth\RegisterController;
 use App\Http\Controllers\API\V1\Auth\UserManagementController;
@@ -32,11 +33,15 @@ Route::post('login', [LoginController::class, 'login']);
 Route::middleware(['api_v1', 'auth:sanctum'])
     ->prefix('superadmin')
     ->group(function () {
-        Route::post('user/register', [RegisterController::class, 'register']);
-        Route::post('user/disable', [UserManagementController::class, 'disableOrEnable']);
-        Route::post('user/enable', [UserManagementController::class, 'disableOrEnable']);
-        Route::delete('user/delete', [UserManagementController::class, 'delete']);
-        Route::get('user/list', [UserManagementController::class, 'listUsers']);
+        //user
+        Route::prefix('user')
+            ->group(function () {
+                Route::post('register', [RegisterController::class, 'register']);
+                Route::post('disable', [UserManagementController::class, 'disableOrEnable']);
+                Route::post('enable', [UserManagementController::class, 'disableOrEnable']);
+                Route::delete('delete', [UserManagementController::class, 'delete']);
+                Route::get('list', [UserManagementController::class, 'listUsers']);
+            });
 
         //course
         Route::prefix('subject')
@@ -78,10 +83,10 @@ Route::middleware(['api_v1', 'auth:sanctum'])
             ->group(function () {
                 Route::post('upload', [CandidatesController::class, 'upload']);
                 Route::delete('delete', [CandidatesController::class, 'delete']);
-                // Route::post('edit', [CourseController::class, 'edit']);
-                // Route::get('list', [CourseController::class, 'list']);
-                // Route::delete('delete', [CourseController::class, 'delete']);
             });
+
+        //update admission criteria
+        Route::post('admission_criteria/update', [AdmissionController::class, 'admissionCriteria']);
     });
 
 
