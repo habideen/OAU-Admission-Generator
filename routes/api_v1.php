@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\V1\Auth\LoginController;
 use App\Http\Controllers\API\V1\Auth\RegisterController;
 use App\Http\Controllers\API\V1\Auth\UserManagementController;
+use App\Http\Controllers\API\V1\CandidatesController;
 use App\Http\Controllers\API\V1\CourseController;
 use App\Http\Controllers\API\V1\FacultyController;
 use App\Http\Controllers\API\V1\SessionController;
@@ -70,6 +71,15 @@ Route::middleware(['api_v1', 'auth:sanctum'])
                 Route::post('edit', [CourseController::class, 'edit']);
                 Route::get('list', [CourseController::class, 'list']);
                 Route::delete('delete', [CourseController::class, 'delete']);
+            });
+
+        //course
+        Route::prefix('candidate')
+            ->group(function () {
+                Route::post('upload', [CandidatesController::class, 'upload']);
+                // Route::post('edit', [CourseController::class, 'edit']);
+                // Route::get('list', [CourseController::class, 'list']);
+                // Route::delete('delete', [CourseController::class, 'delete']);
             });
     });
 
