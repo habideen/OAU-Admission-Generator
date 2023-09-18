@@ -77,6 +77,7 @@ Route::middleware(['api_v1', 'auth:sanctum'])
         Route::prefix('candidate')
             ->group(function () {
                 Route::post('upload', [CandidatesController::class, 'upload']);
+                Route::delete('delete', [CandidatesController::class, 'delete']);
                 // Route::post('edit', [CourseController::class, 'edit']);
                 // Route::get('list', [CourseController::class, 'list']);
                 // Route::delete('delete', [CourseController::class, 'delete']);
