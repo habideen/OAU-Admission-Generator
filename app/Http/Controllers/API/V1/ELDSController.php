@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Catchment;
+use App\Models\elds;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class CatchmentController extends Controller
+class ELDSController extends Controller
 {
     public function add(Request $request)
     {
@@ -18,7 +18,7 @@ class CatchmentController extends Controller
         $validator = Validator::make($request->all(), [
             'state' => [
                 'required', 'regex:/^[a-zA-Z\- ]{3,255}$/',
-                Rule::unique('catchments')
+                Rule::unique('elds')
                     ->where('session_updated', $activeSession)
             ]
         ]);
@@ -31,7 +31,7 @@ class CatchmentController extends Controller
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
-        $save = new Catchment;
+        $save = new elds;
         $save->state = strtoupper($request->state);
         $save->session_updated = $activeSession;
         $save->save();
@@ -45,7 +45,7 @@ class CatchmentController extends Controller
 
         return response([
             'status' => 'success',
-            'message' => 'Catchment state added successfully for ' . $activeSession . ' session'
+            'message' => 'ELDS state added successfully for ' . $activeSession . ' session'
         ], Response::HTTP_CREATED);
     } //add
 
@@ -54,12 +54,12 @@ class CatchmentController extends Controller
     public function edit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'catchment_id' => ['required', 'integer', 'exists:catchments,id'],
+            'elds_id' => ['required', 'integer', 'exists:elds,id'],
             'state' => [
                 'required', 'regex:/^[a-zA-Z\- ]{3,255}$/',
-                Rule::unique('catchments')
+                Rule::unique('elds')
                     ->where('session_updated', activeSession())
-                    ->ignore($request->catchment_id)
+                    ->ignore($request->elds_id)
             ]
         ]);
 
@@ -71,7 +71,7 @@ class CatchmentController extends Controller
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
-        $save = Catchment::find($request->catchment_id);
+        $save = elds::find($request->elds_id);
         $save->state = strtoupper($request->state);
         $save->save();
 
@@ -84,7 +84,7 @@ class CatchmentController extends Controller
 
         return response([
             'status' => 'success',
-            'message' => 'Catchment state updated successfully'
+            'message' => 'ELDS state updated successfully'
         ], Response::HTTP_CREATED);
     } //edit
 
@@ -92,14 +92,14 @@ class CatchmentController extends Controller
 
     public function list(Request $request)
     {
-        $catchment = Catchment::orderBy('state', 'ASC')
+        $elds = elds::orderBy('state', 'ASC')
             ->where('session_updated', $request->session ?? activeSession())
             ->get();
 
         return response([
             'status' => 'success',
             'message' => 'Retrieved successfully',
-            'catchment' => $catchment
+            'elds' => $elds
         ]);
     } //list
 
@@ -109,7 +109,7 @@ class CatchmentController extends Controller
     public function delete(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => ['required', 'integer', 'exists:catchments']
+            'id' => ['required', 'integer', 'exists:elds']
         ]);
 
         if ($validator->fails()) {
@@ -120,7 +120,7 @@ class CatchmentController extends Controller
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
-        $delete = Catchment::where('id', $request->id)->delete();
+        $delete = elds::where('id', $request->id)->delete();
 
         if (!$delete) {
             return response([
@@ -131,7 +131,7 @@ class CatchmentController extends Controller
 
         return response([
             'status' => 'success',
-            'message' => 'Catchment deleted successfully'
+            'message' => 'ELDS deleted successfully'
         ], Response::HTTP_CREATED);
     } //delete
 }

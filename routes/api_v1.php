@@ -7,6 +7,7 @@ use App\Http\Controllers\API\V1\Auth\UserManagementController;
 use App\Http\Controllers\API\V1\CandidatesController;
 use App\Http\Controllers\API\V1\CatchmentController;
 use App\Http\Controllers\API\V1\CourseController;
+use App\Http\Controllers\API\V1\ELDSController;
 use App\Http\Controllers\API\V1\FacultyController;
 use App\Http\Controllers\API\V1\SessionController;
 use App\Http\Controllers\API\V1\SubjectController;
@@ -87,6 +88,16 @@ Route::middleware(['api_v1', 'auth:sanctum'])
                 Route::get('list', [CatchmentController::class, 'list']);
                 Route::delete('delete', [CatchmentController::class, 'delete']);
             });
+
+        //course
+        Route::prefix('elds')
+            ->group(function () {
+                Route::post('add', [ELDSController::class, 'add']);
+                Route::post('edit', [ELDSController::class, 'edit']);
+                Route::get('list', [ELDSController::class, 'list']);
+                Route::delete('delete', [ELDSController::class, 'delete']);
+            });
+
 
         //course
         Route::prefix('candidate')
