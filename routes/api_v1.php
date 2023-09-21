@@ -5,6 +5,7 @@ use App\Http\Controllers\API\V1\Auth\LoginController;
 use App\Http\Controllers\API\V1\Auth\RegisterController;
 use App\Http\Controllers\API\V1\Auth\UserManagementController;
 use App\Http\Controllers\API\V1\CandidatesController;
+use App\Http\Controllers\API\V1\CatchmentController;
 use App\Http\Controllers\API\V1\CourseController;
 use App\Http\Controllers\API\V1\FacultyController;
 use App\Http\Controllers\API\V1\SessionController;
@@ -79,6 +80,15 @@ Route::middleware(['api_v1', 'auth:sanctum'])
             });
 
         //course
+        Route::prefix('catchment')
+            ->group(function () {
+                Route::post('add', [CatchmentController::class, 'add']);
+                Route::post('edit', [CatchmentController::class, 'edit']);
+                Route::get('list', [CatchmentController::class, 'list']);
+                Route::delete('delete', [CatchmentController::class, 'delete']);
+            });
+
+        //course
         Route::prefix('candidate')
             ->group(function () {
                 Route::post('upload', [CandidatesController::class, 'upload']);
@@ -91,7 +101,6 @@ Route::middleware(['api_v1', 'auth:sanctum'])
                 Route::post('criteria/update', [AdmissionController::class, 'admissionCriteria']);
                 Route::get('list', [AdmissionController::class, 'generateAdmission']);
             });
-        
     });
 
 

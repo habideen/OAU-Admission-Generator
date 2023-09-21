@@ -127,7 +127,7 @@ class FacultyController extends Controller
 
         return response([
             'status' => 'success',
-            'message' => 'Faculty delteted successfully'
+            'message' => 'Faculty deleted successfully'
         ], Response::HTTP_CREATED);
     } //delete
 }

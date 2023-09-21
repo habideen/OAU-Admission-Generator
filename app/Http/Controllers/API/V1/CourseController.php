@@ -461,7 +461,7 @@ class CourseController extends Controller
 
         return response([
             'status' => 'success',
-            'message' => 'Course deleteted successfully'
+            'message' => 'Course deleted successfully'
         ], Response::HTTP_CREATED);
     } //delete
 }
