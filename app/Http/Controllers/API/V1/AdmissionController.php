@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdmissionCriteria;
+use App\Models\Candidate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AdmissionController extends Controller
@@ -59,4 +61,92 @@ class AdmissionController extends Controller
             'message' => 'Admission criteria updated successfully'
         ], Response::HTTP_CREATED);
     } //admissionCriteria
+
+
+
+    public function generateAdmission(Request $request)
+    {
+        $sessionUpdated = '2022/2023';
+
+        // Step 1: Retrieve the distinct courses for the specified session_updated and sort them in ascending order
+        $distinctCourses = DB::table('candidates')
+            ->where('session_updated', $sessionUpdated)
+            ->distinct()
+            ->orderBy('course', 'asc')
+            ->pluck('course');
+
+        foreach ($distinctCourses as $course) {
+            // Step 2: Select rg_num, aggregate, state_name from Candidates table for the current course
+            $candidates = DB::table('candidates')
+                ->select('rg_num', 'aggregate', 'state_name')
+                ->where('course', $course)
+                ->where('session_updated', $sessionUpdated)
+                ->orderBy('aggregate', 'desc')
+                ->get();
+
+            // Step 3: Retrieve the admission criteria percentages from admission_criterias table
+            $admissionCriteria = DB::table('admission_criterias')
+                ->select('merit', 'catchment', 'elds')
+                ->first();
+
+            $meritPercentage = $admissionCriteria->merit;
+            $catchmentPercentage = $admissionCriteria->catchment;
+            $eldsPercentage = $admissionCriteria->elds;
+
+            // Calculate the number of candidates to admit based on the merit percentage
+            $meritCount = (int)(count($candidates) * ($meritPercentage / 100));
+
+            // Initialize the admission list
+            $admissionList = [];
+
+            // Admit candidates based on merit
+            for ($i = 0; $i < $meritCount; $i++) {
+                if ($i < count($candidates)) {
+                    $admissionList[] = [
+                        'rg_num' => $candidates[$i]->rg_num,
+                        'aggregate' => $candidates[$i]->aggregate,
+                        'state_name' => $candidates[$i]->state_name,
+                        'category' => 'Merit',
+                    ];
+                }
+            }
+
+            // Calculate the number of candidates to admit based on the catchment percentage
+            $catchmentCount = (int)((count($candidates) - $meritCount) * ($catchmentPercentage / 100));
+
+            // Admit remaining candidates based on catchment and state criteria
+            for ($i = $meritCount; $i < $meritCount + $catchmentCount; $i++) {
+                if ($i < count($candidates) && in_array($candidates[$i]->state_name, ['OYO', 'OSUN', 'ONDO', 'EKITI', 'LAGOS'])) {
+                    $admissionList[] = [
+                        'rg_num' => $candidates[$i]->rg_num,
+                        'aggregate' => $candidates[$i]->aggregate,
+                        'state_name' => $candidates[$i]->state_name,
+                        'category' => 'Catchment',
+                    ];
+                }
+            }
+
+            // Calculate the number of candidates to admit based on the ELDS percentage
+            $eldsCount = (int)((count($candidates) - $meritCount - $catchmentCount) * ($eldsPercentage / 100));
+
+            // Admit remaining candidates based on ELDS and state criteria
+            for ($i = $meritCount + $catchmentCount; $i < $meritCount + $catchmentCount + $eldsCount; $i++) {
+                if ($i < count($candidates) && in_array($candidates[$i]->state_name, ['KANO', 'ADAMAWA', 'OSUN'])) {
+                    $admissionList[] = [
+                        'rg_num' => $candidates[$i]->rg_num,
+                        'aggregate' => $candidates[$i]->aggregate,
+                        'state_name' => $candidates[$i]->state_name,
+                        'category' => 'ELDS',
+                    ];
+                }
+            }
+
+            // Echo the admission list for the current course by looping through them
+            echo "Course: $course\n";
+            foreach ($admissionList as $admission) {
+                echo "RG Number: {$admission['rg_num']}, Aggregate: {$admission['aggregate']}, State: {$admission['state_name']}, Category: {$admission['category']}\n";
+            }
+            echo "\n";
+        }
+    } //generateAdmission
 }

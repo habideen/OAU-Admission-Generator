@@ -85,8 +85,13 @@ Route::middleware(['api_v1', 'auth:sanctum'])
                 Route::delete('delete', [CandidatesController::class, 'delete']);
             });
 
-        //update admission criteria
-        Route::post('admission_criteria/update', [AdmissionController::class, 'admissionCriteria']);
+        //admission
+        Route::prefix('admission')
+            ->group(function () {
+                Route::post('criteria/update', [AdmissionController::class, 'admissionCriteria']);
+                Route::get('list', [AdmissionController::class, 'generateAdmission']);
+            });
+        
     });
 
 

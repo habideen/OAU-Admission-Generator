@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('aggregate');
             $table->string('session_updated', 9);
             $table->timestamps();
+
+            $table->primary('rg_num');
         });
     }
 

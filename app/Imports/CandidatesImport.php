@@ -42,10 +42,10 @@ class CandidatesImport extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder 
                 'subject_code_3' => ucwords($subjects[2]),
                 'course' => $row['course'],
                 'utme_score' => (int) trim($row['utme_score']),
-                'olevel_score' => (float) trim($row['olevel_score']),
-                'putme_score' => (float) trim($row['putme_score']),
-                'putme_screening' => (float) trim($row['putme_screening']),
-                'aggregate' => (float) trim($row['aggregate']),
+                'olevel_score' => floor((float) trim($row['olevel_score']) * 100) / 100,
+                'putme_score' => floor((float) trim($row['putme_score']) * 100) / 100,
+                'putme_screening' => floor((float) trim($row['putme_screening']) * 100) / 100,
+                'aggregate' => floor((float) trim($row['aggregate']) * 100) / 100,
                 'session_updated' => Session::get('active_session')
             ]
         );
