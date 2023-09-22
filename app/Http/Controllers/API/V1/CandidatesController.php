@@ -44,7 +44,7 @@ class CandidatesController extends Controller
 
   public function delete(Request $request)
   {
-    $request->request->add([
+    $request->merge([
       'session' => ucwords($request->session) == 'Current Session' ? activeSession() : $request->session
     ]);
 

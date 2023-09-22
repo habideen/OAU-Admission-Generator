@@ -10,7 +10,7 @@ class AdmissionCriteria extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
+        'session',
         'merit',
         'catchment',
         'elds',

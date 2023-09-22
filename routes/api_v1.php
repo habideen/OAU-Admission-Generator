@@ -110,6 +110,7 @@ Route::middleware(['api_v1', 'auth:sanctum'])
         Route::prefix('admission')
             ->group(function () {
                 Route::post('criteria/update', [AdmissionController::class, 'admissionCriteria']);
+                Route::get('criteria/get', [AdmissionController::class, 'getadmissionCriteria']);
                 Route::get('generate', [AdmissionController::class, 'generateAdmission']);
                 Route::get('download', [AdmissionController::class, 'downloadAdmission']);
                 Route::get('add_by_discretion', [AdmissionController::class, 'addByAdmission']);
@@ -120,3 +121,5 @@ Route::middleware(['api_v1', 'auth:sanctum'])
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('download', [AdmissionController::class, 'temp']);

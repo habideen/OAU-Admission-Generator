@@ -33,9 +33,12 @@ if (!function_exists('canDownload')) {
     }
 
     if ($request->type != 'All') {
-      $faculty_id = Course::select('faculty_id')->first();
+      $faculty_id = Course::select('course')
+        ->where('course', $request->type)
+        ->where('faculty_id', Auth::user()->faculty_id)
+        ->first();
 
-      if ($faculty_id && $faculty_id->faculty_id == Auth::user()->faculty_id) {
+      if ($faculty_id) {
         return true;
       }
     }

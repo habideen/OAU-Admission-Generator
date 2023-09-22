@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Exports\GetAdmissionList;
 use App\Http\Controllers\Controller;
 use App\Models\AdmissionCriteria;
 use App\Models\AdmissionList;
 use App\Models\Candidate;
 use App\Models\Catchment;
+use App\Models\Course;
 use App\Models\elds;
 use App\Rules\AccountTypeValidation;
 use App\Rules\SessionValidation;
@@ -14,6 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+
+use function PHPSTORM_META\type;
 
 class AdmissionController extends Controller
 {
@@ -44,7 +48,7 @@ class AdmissionController extends Controller
 
         $save = AdmissionCriteria::updateOrCreate(
             [
-                'id' => '1' //only one column exist for this
+                'session' => activeSession() //only one column exist for this
             ],
             [
                 'merit' => $request->merit,
@@ -66,6 +70,17 @@ class AdmissionController extends Controller
             'message' => 'Admission criteria updated successfully'
         ], Response::HTTP_CREATED);
     } //admissionCriteria
+
+
+
+    public function getadmissionCriteria(Request $request)
+    {
+        return response([
+            'status' => 'success',
+            'message' => 'Retrieved successfully',
+            'criteria' => AdmissionCriteria::where('session', $request->session ?? activeSession())->first()
+        ]);
+    }
 
 
 
@@ -99,6 +114,7 @@ class AdmissionController extends Controller
             // Step 3: Retrieve the admission criteria percentages from admission_criterias table
             $admissionCriteria = DB::table('admission_criterias')
                 ->select('merit', 'catchment', 'elds')
+                ->where('session', $request->session ?? activeSession())
                 ->first();
 
             $meritPercentage = $admissionCriteria->merit;
@@ -180,12 +196,13 @@ class AdmissionController extends Controller
 
     public function downloadAdmission(Request $request)
     {
-        $request->request->add([
-            'session' => ucwords($request->session) == 'Current Session' ? activeSession() : $request->session
+        $request->merge([
+            'session' => ucwords($request->session) == 'Current Session' ? activeSession() : $request->session,
+            'type' => ucwords($request->type)
         ]);
 
         $validator = Validator::make($request->all(), [
-            'type' => ['required', 'integer', 'min:0', 'max:100'],
+            'type' => ['required', 'string'],
             'session' => ['required', new SessionValidation]
         ]);
 
@@ -197,6 +214,16 @@ class AdmissionController extends Controller
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
+        if ($request->type != 'All') {
+            $isCourse = Course::select('course')->where('course', $request->type)->first();
+
+            if (!$isCourse) {
+                return response([
+                    'status' => 'failed',
+                    'message' => 'Invalid course selected'
+                ], Response::HTTP_EXPECTATION_FAILED);
+            }
+        }
 
         if (!canDownload($request)) {
             return response([
@@ -205,6 +232,21 @@ class AdmissionController extends Controller
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
-        
+
+        return (new GetAdmissionList([
+            'session' => $request->session,
+            'type' => $request->type
+        ]))->download($request->type . ' - ' . $request->session . '.xlsx');
     } //downloadAdmission
+
+
+
+
+    public function temp(Request $request)
+    {
+        return (new GetAdmissionList([
+            'session' => '2022/2023',
+            'type' => 'Computer Engineering'
+        ]))->download('invoices.xlsx');
+    }
 }
