@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admission_lists', function (Blueprint $table) {
-            $table->string('rg_num', 14);
+            $table->string('rg_num', 15);
+            $table->string('category', 15);
             $table->timestamps();
 
             $table->primary('rg_num');

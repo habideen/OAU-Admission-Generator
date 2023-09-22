@@ -4,7 +4,12 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdmissionCriteria;
+use App\Models\AdmissionList;
 use App\Models\Candidate;
+use App\Models\Catchment;
+use App\Models\elds;
+use App\Rules\AccountTypeValidation;
+use App\Rules\SessionValidation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +72,7 @@ class AdmissionController extends Controller
     public function generateAdmission(Request $request)
     {
         $sessionUpdated = '2022/2023';
+        $timestamp = now();
 
         // Step 1: Retrieve the distinct courses for the specified session_updated and sort them in ascending order
         $distinctCourses = DB::table('candidates')
@@ -74,6 +80,12 @@ class AdmissionController extends Controller
             ->distinct()
             ->orderBy('course', 'asc')
             ->pluck('course');
+
+        $catchmentStates = Catchment::select('state')->get();
+        $catchmentStates = count($catchmentStates) > 0 ? (array)$catchmentStates->pluck('state') : [];
+
+        $eldsStates = elds::select('state')->get();
+        $eldsStates = count($eldsStates) > 0 ? (array)$eldsStates->pluck('state') : [];
 
         foreach ($distinctCourses as $course) {
             // Step 2: Select rg_num, aggregate, state_name from Candidates table for the current course
@@ -104,9 +116,9 @@ class AdmissionController extends Controller
                 if ($i < count($candidates)) {
                     $admissionList[] = [
                         'rg_num' => $candidates[$i]->rg_num,
-                        'aggregate' => $candidates[$i]->aggregate,
-                        'state_name' => $candidates[$i]->state_name,
                         'category' => 'Merit',
+                        'created_at' => $timestamp,
+                        'updated_at' => $timestamp
                     ];
                 }
             }
@@ -116,12 +128,12 @@ class AdmissionController extends Controller
 
             // Admit remaining candidates based on catchment and state criteria
             for ($i = $meritCount; $i < $meritCount + $catchmentCount; $i++) {
-                if ($i < count($candidates) && in_array($candidates[$i]->state_name, ['OYO', 'OSUN', 'ONDO', 'EKITI', 'LAGOS'])) {
+                if ($i < count($candidates) && in_array($candidates[$i]->state_name, $catchmentStates)) {
                     $admissionList[] = [
                         'rg_num' => $candidates[$i]->rg_num,
-                        'aggregate' => $candidates[$i]->aggregate,
-                        'state_name' => $candidates[$i]->state_name,
                         'category' => 'Catchment',
+                        'created_at' => $timestamp,
+                        'updated_at' => $timestamp
                     ];
                 }
             }
@@ -131,22 +143,68 @@ class AdmissionController extends Controller
 
             // Admit remaining candidates based on ELDS and state criteria
             for ($i = $meritCount + $catchmentCount; $i < $meritCount + $catchmentCount + $eldsCount; $i++) {
-                if ($i < count($candidates) && in_array($candidates[$i]->state_name, ['KANO', 'ADAMAWA', 'OSUN'])) {
+                if ($i < count($candidates) && in_array($candidates[$i]->state_name, $eldsStates)) {
                     $admissionList[] = [
                         'rg_num' => $candidates[$i]->rg_num,
-                        'aggregate' => $candidates[$i]->aggregate,
-                        'state_name' => $candidates[$i]->state_name,
                         'category' => 'ELDS',
+                        'created_at' => $timestamp,
+                        'updated_at' => $timestamp
                     ];
                 }
             }
 
-            // Echo the admission list for the current course by looping through them
-            echo "Course: $course\n";
-            foreach ($admissionList as $admission) {
-                echo "RG Number: {$admission['rg_num']}, Aggregate: {$admission['aggregate']}, State: {$admission['state_name']}, Category: {$admission['category']}\n";
-            }
-            echo "\n";
+            // generate admission for the generated course
+            $save = AdmissionList::upsert(
+                $admissionList,
+                ['rg_num'],
+                ['category', 'created_at', 'updated_at']
+            );
+        } //loop through courses
+
+
+        if (!$save) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Server error!'
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
         }
+
+        return response([
+            'status' => 'success',
+            'message' => 'Admission generated successfully'
+        ], Response::HTTP_CREATED);
     } //generateAdmission
+
+
+
+
+    public function downloadAdmission(Request $request)
+    {
+        $request->request->add([
+            'session' => ucwords($request->session) == 'Current Session' ? activeSession() : $request->session
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            'type' => ['required', 'integer', 'min:0', 'max:100'],
+            'session' => ['required', new SessionValidation]
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Invalid input submitted',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+
+        if (!canDownload($request)) {
+            return response([
+                'status' => 'failed',
+                'message' => 'You don\'t have permission to perform this operations'
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+        
+    } //downloadAdmission
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Imports\CandidatesImport;
 use App\Models\Candidate;
+use App\Rules\SessionValidation;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -48,22 +49,7 @@ class CandidatesController extends Controller
     ]);
 
     $validator = Validator::make($request->all(), [
-      'session' => [
-        'required',
-        'regex:/^[2-9][0-9]{3,3}[\/][2-9][0-9]{3,3}$/',
-        function (string $attribute, mixed $value, Closure $fail) {
-          $years = explode('/', $value);
-
-          if (
-            count($years) !== 2
-            || intval($years[0]) >= intval($years[1])
-            || intval($years[0]) + 1 != intval($years[1])
-            || intval($years[0]) >= date('Y') + 10
-          ) {
-            $fail("The {$attribute} is invalid.");
-          }
-        },
-      ]
+      'session' => ['required', new SessionValidation]
     ]);
 
     if ($validator->fails()) {

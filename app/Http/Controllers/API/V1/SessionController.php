@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Session as ModelsSession;
+use App\Rules\SessionValidation;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -36,7 +37,7 @@ class SessionController extends Controller
         return response([
             'status' => 'success',
             'message' => 'Retrieved successfully',
-            'sessions' => ModelsSession::whereNotNull('is_active')->first()
+            'session' => ModelsSession::whereNotNull('is_active')->first()
         ], Response::HTTP_CREATED);
     } //getActive
 
@@ -45,22 +46,7 @@ class SessionController extends Controller
     public function set(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'session' => [
-                'required',
-                'regex:/^[2-9][0-9]{3,3}[\/][2-9][0-9]{3,3}$/',
-                function (string $attribute, mixed $value, Closure $fail) {
-                    $years = explode('/', $value);
-
-                    if (
-                        count($years) !== 2
-                        || intval($years[0]) >= intval($years[1])
-                        || intval($years[0]) + 1 != intval($years[1])
-                        || intval($years[0]) >= date('Y') + 10
-                    ) {
-                        $fail("The {$attribute} is invalid.");
-                    }
-                },
-            ]
+            'session' => ['required', new SessionValidation]
         ]);
 
         if ($validator->fails()) {
@@ -70,7 +56,6 @@ class SessionController extends Controller
                 'errors' => $validator->errors(),
             ], Response::HTTP_EXPECTATION_FAILED);
         }
-
 
         $save = null;
 

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('phone_2', 11)->nullable();
             $table->rememberToken();
             $table->string('account_type', 15);
+            $table->string('faculty_id', 1)->nullable();
             $table->string('account_disabled', 1)->nullable();
             $table->timestamps();
 
