@@ -14,8 +14,99 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    
-});
 
-Route::get('/login', [LoginController::class, 'login'])->name('login');
+
+Route::get('/', [LoginController::class, 'index']);
+Route::get('/login', [LoginController::class, 'index']);
+
+Route::middleware(['throttle:custom_auth'])
+    ->group(function () {
+        Route::post('/login', [LoginController::class, 'login'])->name('login');
+    });
+
+
+
+Route::middleware(['auth'])
+    ->prefix('superadmin')
+    ->group(function () {
+        //user
+        Route::prefix('user')
+            ->group(function () {
+                Route::post('register', [RegisterController::class, 'register']);
+                Route::post('disable', [UserManagementController::class, 'disableOrEnable']);
+                Route::post('enable', [UserManagementController::class, 'disableOrEnable']);
+                Route::delete('delete', [UserManagementController::class, 'delete']);
+                Route::get('list', [UserManagementController::class, 'listUsers']);
+            });
+
+        //course
+        Route::prefix('subject')
+            ->group(function () {
+                Route::post('add', [SubjectController::class, 'add']);
+                Route::post('edit', [SubjectController::class, 'edit']);
+                Route::get('list', [SubjectController::class, 'list']);
+                Route::delete('delete', [SubjectController::class, 'delete']);
+            });
+
+        //course
+        Route::prefix('session')
+            ->group(function () {
+                Route::post('set', [SessionController::class, 'set']);
+                Route::get('get/all', [SessionController::class, 'getAll']);
+                Route::get('get/active', [SessionController::class, 'getActive']);
+            });
+
+        //course
+        Route::prefix('faculty')
+            ->group(function () {
+                Route::post('add', [FacultyController::class, 'add']);
+                Route::post('edit', [FacultyController::class, 'edit']);
+                Route::get('list', [FacultyController::class, 'list']);
+                Route::delete('delete', [FacultyController::class, 'delete']);
+            });
+
+        //course
+        Route::prefix('course')
+            ->group(function () {
+                Route::post('add', [CourseController::class, 'add']);
+                Route::post('edit', [CourseController::class, 'edit']);
+                Route::get('list', [CourseController::class, 'list']);
+                Route::delete('delete', [CourseController::class, 'delete']);
+            });
+
+        //course
+        Route::prefix('catchment')
+            ->group(function () {
+                Route::post('add', [CatchmentController::class, 'add']);
+                Route::post('edit', [CatchmentController::class, 'edit']);
+                Route::get('list', [CatchmentController::class, 'list']);
+                Route::delete('delete', [CatchmentController::class, 'delete']);
+            });
+
+        //course
+        Route::prefix('elds')
+            ->group(function () {
+                Route::post('add', [ELDSController::class, 'add']);
+                Route::post('edit', [ELDSController::class, 'edit']);
+                Route::get('list', [ELDSController::class, 'list']);
+                Route::delete('delete', [ELDSController::class, 'delete']);
+            });
+
+
+        //course
+        Route::prefix('candidate')
+            ->group(function () {
+                Route::post('upload', [CandidatesController::class, 'upload']);
+                Route::delete('delete', [CandidatesController::class, 'delete']);
+            });
+
+        //admission
+        Route::prefix('admission')
+            ->group(function () {
+                Route::post('criteria/update', [AdmissionController::class, 'admissionCriteria']);
+                Route::get('criteria/get', [AdmissionController::class, 'getadmissionCriteria']);
+                Route::get('generate', [AdmissionController::class, 'generateAdmission']);
+                Route::get('download', [AdmissionController::class, 'downloadAdmission']);
+                Route::get('add_by_discretion', [AdmissionController::class, 'addByAdmission']);
+            });
+    });

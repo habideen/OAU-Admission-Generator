@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -23,6 +24,13 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        if (strpos($request->header('referer'), '/api/')) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Please login'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+        
         Session::flash('fail', 'Username or password is incorrect');
         $request->validate([
             'email' => ['required', 'email'],
