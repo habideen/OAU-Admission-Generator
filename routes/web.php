@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\Auth\LoginController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\FacultyController;
 use App\Http\Controllers\Web\SessionController;
 use Illuminate\Support\Facades\Route;
 
@@ -51,18 +52,18 @@ Route::middleware(['auth'])
                 Route::delete('delete', [SubjectController::class, 'delete']);
             });
 
-        //course
+        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('session')
             ->group(function () {
                 Route::get('set', [SessionController::class, 'setView']);
                 Route::post('set', [SessionController::class, 'set']);
                 Route::get('get/all', [SessionController::class, 'getAll']);
-                Route::get('get/active', [SessionController::class, 'getActive']);
             });
 
         //course
         Route::prefix('faculty')
             ->group(function () {
+                Route::get('add', [FacultyController::class, 'addView']);
                 Route::post('add', [FacultyController::class, 'add']);
                 Route::post('edit', [FacultyController::class, 'edit']);
                 Route::get('list', [FacultyController::class, 'list']);

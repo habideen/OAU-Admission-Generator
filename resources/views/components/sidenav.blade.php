@@ -28,7 +28,19 @@
           </ul>
         </li>
 
-        <li class="menu-title" key="t-pages">Pages</li>
+        <li>
+          <a href="javascript: void(0);" class="has-arrow waves-effect">
+            <i class="bx bx-buildings"></i>
+            <span key="t-facultys">Faculty</span>
+          </a>
+          <ul class="sub-menu" aria-expanded="false">
+            <li><a href="/{{ $accountType }}/faculty/add" key="t-faculty_add">Add faculty</a></li>
+            <li><a href="/{{ $accountType }}/faculty/list" key="t-faculty_all">View all facultys</a></li>
+          </ul>
+        </li>
+
+
+        <li class="menu-title" key="t-pages">Settings</li>
 
         <li>
           <a href="/{{ $accountType }}/my_profile" class="waves-effect">

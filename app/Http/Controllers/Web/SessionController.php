@@ -25,7 +25,7 @@ class SessionController extends Controller
 
         return redirect()->back()->with(
             (array) $api
-        );
+        )->withErrors($api->errors);
     } //set
 
 

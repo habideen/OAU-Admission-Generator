@@ -8,6 +8,7 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 
 if (!function_exists('isPassword')) {
@@ -116,13 +117,3 @@ if (!function_exists('verifyEmail')) {
     ));
   }
 }
-
-
-
-// if (!function_exists('apiResponse')) {
-//   function apiResponse($response)
-//   {
-//     // return $message['status'] = $response->status ?? null;
-//     return $response->status;
-//   }
-// }
