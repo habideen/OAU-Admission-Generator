@@ -18,6 +18,8 @@
   <!-- App Css-->
   <link href="/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
 
+  @yield('style')
+
 </head>
 
 <body data-sidebar="dark">
@@ -38,7 +40,11 @@
     <!-- ============================================================== -->
     <!-- Start right Content here -->
     <!-- ============================================================== -->
-    @yield('content')
+    <div class="main-content">
+      @yield('content')
+
+      <x-footer />
+    </div>
     <!-- end main content-->
 
   </div>
@@ -54,14 +60,10 @@
   <script src="/assets/libs/simplebar/simplebar.min.js"></script>
   <script src="/assets/libs/node-waves/waves.min.js"></script>
 
-  <!-- apexcharts -->
-  <script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
-
-  <!-- dashboard init -->
-  <script src="/assets/js/pages/dashboard.init.js"></script>
-
   <!-- App js -->
   <script src="/assets/js/app.js"></script>
+
+  @yield('script')
 </body>
 
 </html>

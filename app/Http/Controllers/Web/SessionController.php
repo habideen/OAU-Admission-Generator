@@ -27,4 +27,17 @@ class SessionController extends Controller
             (array) $api
         );
     } //set
+
+
+
+
+    public function getAll(Request $request)
+    {
+        $api = (new V1SessionController)->getAll($request);
+        $api = json_decode($api->getContent());
+
+        return view('session_view_all')->with([
+            'sessions' => $api->sessions
+        ]);
+    } //getAll
 }

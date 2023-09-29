@@ -13,14 +13,14 @@
         <li>
           <a href="/{{ $accountType }}/dashboard" class="waves-effect">
             <i class="bx bx-home-circle"></i>
-            <span key="t-dashboards">Dashboards</span>
+            <span key="t-dashboard">Dashboards</span>
           </a>
         </li>
 
         <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-timer"></i>
-            <span key="t-session">Session</span>
+            <span key="t-sessions">Session</span>
           </a>
           <ul class="sub-menu" aria-expanded="false">
             <li><a href="/{{ $accountType }}/session/set" key="t-session_set">Activate session</a></li>
