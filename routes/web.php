@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Web\Auth\LoginController;
+use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\SessionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +31,7 @@ Route::middleware(['throttle:custom_auth'])
 Route::middleware(['auth'])
     ->prefix('superadmin')
     ->group(function () {
+        Route::get('dashboard', [DashboardController::class, 'index']);
         //user
         Route::prefix('user')
             ->group(function () {
@@ -51,6 +54,7 @@ Route::middleware(['auth'])
         //course
         Route::prefix('session')
             ->group(function () {
+                Route::get('set', [SessionController::class, 'setView']);
                 Route::post('set', [SessionController::class, 'set']);
                 Route::get('get/all', [SessionController::class, 'getAll']);
                 Route::get('get/active', [SessionController::class, 'getActive']);

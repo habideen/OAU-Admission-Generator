@@ -30,20 +30,15 @@ class LoginController extends Controller
                 'message' => 'Please login'
             ], Response::HTTP_UNAUTHORIZED);
         }
-        
-        Session::flash('fail', 'Username or password is incorrect');
+
+        Session::flash('status', 'failed');
+        Session::flash('message', 'Username or password is incorrect');
         $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-        Session::remove('flash');
-
-        //limit failed attempt /min to 5
-        $executed = RateLimiter::attempt('web_auth:' . $request->ip(), $perMinute = 5, function () {
-        });
-
-        if (!$executed)
-            return redirect()->back()->with('fail', auth_messages('throttle_message'));
+        Session::remove('status');
+        Session::remove('message');
 
         if (!Auth::attempt($request->except(['_token', 'remember']), $request->input('remember')))
             return redirect()->back()->with('fail', auth_messages('login_error'));
@@ -54,8 +49,11 @@ class LoginController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             $request->session()->flush();
-            return redirect()->back()->with('fail', auth_messages('verify_email')
-                . ' <a href="/verify_email">Click here to verify now.</a>');
+            return redirect()->back()->with([
+                'status' => 'failed',
+                'message' => auth_messages('verify_email')
+                    . ' <a href="/verify_email">Click here to verify now.</a>'
+            ]);
         } elseif (Auth::user()->disabled) {
             // check if account is disabled
             Auth::logoutOtherDevices($request->password);
@@ -64,13 +62,14 @@ class LoginController extends Controller
             $request->session()->regenerateToken();
             $request->session()->flush();
 
-            return redirect()->back()->with('fail', 'This account is disabled. Please contact support.');
+            return redirect()->back()->with([
+                'status' => 'failed',
+                'message' => 'This account is disabled. Please contact support.'
+            ]);
         }
 
 
         $request->session()->regenerate();
-
-        RateLimiter::clear('web_auth:' . $request->ip());
 
         return redirect()->intended(account_type() . '/dashboard');
     }

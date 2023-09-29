@@ -116,3 +116,13 @@ if (!function_exists('verifyEmail')) {
     ));
   }
 }
+
+
+
+// if (!function_exists('apiResponse')) {
+//   function apiResponse($response)
+//   {
+//     // return $message['status'] = $response->status ?? null;
+//     return $response->status;
+//   }
+// }
