@@ -25,4 +25,39 @@ class FacultyController extends Controller
             (array) $api
         )->withErrors($api->errors ?? null);
     } //add
+
+
+
+    public function edit(Request $request)
+    {
+        $api = (new V1FacultyController)->edit($request);
+        $api = json_decode($api->getContent());
+
+        return redirect()->back()->with(
+            (array) $api
+        )->withErrors($api->errors ?? null);
+    } //edit
+
+
+
+    public function list(Request $request)
+    {
+        $api = (new V1FacultyController)->list($request);
+        $api = json_decode($api->getContent());
+
+        return view('faculty_list')->with([
+            'faculties' => $api->faculties
+        ]);
+    } //list
+
+
+    public function delete(Request $request)
+    {
+        $api = (new V1FacultyController)->delete($request);
+        $api = json_decode($api->getContent());
+
+        return redirect()->back()->with(
+            (array) $api
+        )->withErrors($api->errors ?? null);
+    }
 }

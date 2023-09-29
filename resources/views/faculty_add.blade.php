@@ -37,7 +37,7 @@
 
             <x-form.input name="faculty" label="Faculty" type="text" :value="old('faculty')" parentClass="mb-4" />
 
-            <x-form.button :isUpdate="Request::has('faculty_id')" updateText="Update Faculty" defaultText="Save Faculty" />
+            <x-form.button defaultText="Save Faculty" />
 
           </form>
         </div>
