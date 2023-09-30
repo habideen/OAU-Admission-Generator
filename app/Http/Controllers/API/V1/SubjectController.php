@@ -86,11 +86,12 @@ class SubjectController extends Controller
 
 
 
-    public function list(Request $request)
+    public function list(Request $request, $fetchAll = false)
     {
         $pag = $request->pagination && ctype_digit($request->pagination) ? $request->pagination : PAGINATION;
 
-        $subjects = Subject::orderBy('subject', 'ASC')->paginate($pag);
+        $subjects = Subject::orderBy('subject', 'ASC');
+        $subjects = $fetchAll ? $subjects->get() : $subjects->paginate($pag);
 
         return response([
             'status' => 'success',

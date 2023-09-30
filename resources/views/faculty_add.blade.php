@@ -31,10 +31,6 @@
           <form method="post">
             @csrf
 
-            @if (Request::has('faculty_id'))
-              <input type="hidden" name="faculty_id" value="{{ Request::has('faculty_id') }}">
-            @endif
-
             <x-form.input name="faculty" label="Faculty" type="text" :value="old('faculty')" parentClass="mb-4" />
 
             <x-form.button defaultText="Save Faculty" />

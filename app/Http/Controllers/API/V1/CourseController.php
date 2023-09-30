@@ -152,6 +152,13 @@ class CourseController extends Controller
             array_push($subjects, $request->get('subject_code_' . ($i)));
         }
 
+        if (count($subjects) < 4) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Please select at least 4 subjects.'
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
+
         sort($subjects);
 
         $insert = [];

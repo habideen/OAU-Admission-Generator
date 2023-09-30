@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\Auth\LoginController;
+use App\Http\Controllers\Web\CourseController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\FacultyController;
 use App\Http\Controllers\Web\SessionController;
@@ -60,7 +61,7 @@ Route::middleware(['auth'])
                 Route::get('get/all', [SessionController::class, 'getAll']);
             });
 
-        //course
+        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('faculty')
             ->group(function () {
                 Route::get('add', [FacultyController::class, 'addView']);
@@ -73,6 +74,7 @@ Route::middleware(['auth'])
         //course
         Route::prefix('course')
             ->group(function () {
+                Route::get('add', [CourseController::class, 'addView']);
                 Route::post('add', [CourseController::class, 'add']);
                 Route::post('edit', [CourseController::class, 'edit']);
                 Route::get('list', [CourseController::class, 'list']);
