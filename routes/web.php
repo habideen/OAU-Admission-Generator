@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\CourseController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\FacultyController;
 use App\Http\Controllers\Web\SessionController;
+use App\Http\Controllers\Web\SubjectController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +48,7 @@ Route::middleware(['auth'])
         //course
         Route::prefix('subject')
             ->group(function () {
+                Route::get('add', [SubjectController::class, 'addView']);
                 Route::post('add', [SubjectController::class, 'add']);
                 Route::post('edit', [SubjectController::class, 'edit']);
                 Route::get('list', [SubjectController::class, 'list']);

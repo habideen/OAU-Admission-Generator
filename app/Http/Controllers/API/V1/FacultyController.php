@@ -82,12 +82,13 @@ class FacultyController extends Controller
 
 
 
-    public function list(Request $request, $fetchAll = false)
+    public function list(Request $request)
     {
         $pag = $request->pagination && ctype_digit($request->pagination) ? $request->pagination : PAGINATION;
 
         $faculties = Faculty::orderBy('faculty', 'ASC');
-        $faculties = $fetchAll ? $faculties->get() : $faculties->paginate($pag);
+        $faculties = strtolower($request->get('fetch_all')) == 'true'
+            ? $faculties->get() : $faculties->paginate($pag);
 
         return response([
             'status' => 'success',

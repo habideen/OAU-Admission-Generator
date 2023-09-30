@@ -30,6 +30,17 @@
 
         <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
+            <i class="bx bx-receipt"></i>
+            <span key="t-subjects">O'level Subjects</span>
+          </a>
+          <ul class="sub-menu" aria-expanded="false">
+            <li><a href="/{{ $accountType }}/subject/add" key="t-subject_add">Add subject</a></li>
+            <li><a href="/{{ $accountType }}/subject/list" key="t-subject_all">View all subjects</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="javascript: void(0);" class="has-arrow waves-effect">
             <i class="bx bx-buildings"></i>
             <span key="t-facultys">Faculty</span>
           </a>

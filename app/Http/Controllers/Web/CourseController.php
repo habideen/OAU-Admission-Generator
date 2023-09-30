@@ -12,10 +12,12 @@ class CourseController extends Controller
 {
     public function addView(Request $request)
     {
-        $subjects = (new SubjectController)->list($request, true);
+        $request->merge(['fetch_all' => 'true']);
+
+        $subjects = (new SubjectController)->list($request);
         $subjects = json_decode($subjects->getContent())->subjects;
 
-        $faculties = (new FacultyController)->list($request, true);
+        $faculties = (new FacultyController)->list($request);
         $faculties = json_decode($faculties->getContent())->faculties;
 
 
@@ -66,13 +68,15 @@ class CourseController extends Controller
 
     public function list(Request $request)
     {
+        $request->merge(['fetch_all' => 'true']);
+
         $api = (new V1CourseController)->list($request);
         $api = json_decode($api->getContent());
 
-        $subjects = (new SubjectController)->list($request, true);
+        $subjects = (new SubjectController)->list($request);
         $subjects = json_decode($subjects->getContent())->subjects;
 
-        $faculties = (new FacultyController)->list($request, true);
+        $faculties = (new FacultyController)->list($request);
         $faculties = json_decode($faculties->getContent())->faculties;
 
         return view('course_list')->with([

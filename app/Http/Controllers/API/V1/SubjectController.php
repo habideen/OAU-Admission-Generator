@@ -27,7 +27,7 @@ class SubjectController extends Controller
         }
 
         $save = new Subject;
-        $save->subject_code = $request->subject_code;
+        $save->subject_code = strtoupper($request->subject_code);
         $save->subject = $request->subject;
         $save->save();
 
@@ -67,7 +67,7 @@ class SubjectController extends Controller
         }
 
         $save = Subject::where('subject_code', $request->old_subject_code)->update([
-            'subject_code' => $request->new_subject_code,
+            'subject_code' => strtoupper($request->new_subject_code),
             'subject' => $request->subject
         ]);
 
@@ -86,12 +86,13 @@ class SubjectController extends Controller
 
 
 
-    public function list(Request $request, $fetchAll = false)
+    public function list(Request $request)
     {
         $pag = $request->pagination && ctype_digit($request->pagination) ? $request->pagination : PAGINATION;
 
         $subjects = Subject::orderBy('subject', 'ASC');
-        $subjects = $fetchAll ? $subjects->get() : $subjects->paginate($pag);
+        $subjects = strtolower($request->get('fetch_all')) == 'true'
+            ? $subjects->get() : $subjects->paginate($pag);
 
         return response([
             'status' => 'success',
