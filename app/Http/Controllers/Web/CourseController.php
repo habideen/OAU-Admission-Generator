@@ -45,14 +45,51 @@ class CourseController extends Controller
     } //add
 
 
+    public function edit(Request $request)
+    {
+        $api = (new V1CourseController)->edit($request);
+        $api = json_decode($api->getContent());
+
+        if ($api->status != 'success') {
+            return redirect()->back()->with(
+                (array) $api
+            )->withErrors($api->errors ?? null)
+                ->withInput();
+        }
+
+        return redirect()->back()->with(
+            (array) $api
+        );
+    } //edit
+
+
 
     public function list(Request $request)
     {
         $api = (new V1CourseController)->list($request);
         $api = json_decode($api->getContent());
 
+        $subjects = (new SubjectController)->list($request, true);
+        $subjects = json_decode($subjects->getContent())->subjects;
+
+        $faculties = (new FacultyController)->list($request, true);
+        $faculties = json_decode($faculties->getContent())->faculties;
+
         return view('course_list')->with([
-            'courses' => $api->courses
+            'courses' => $api->courses,
+            'subjects' => $subjects,
+            'faculties' => $faculties,
         ]);
     } //list
+
+
+    public function delete(Request $request)
+    {
+        $api = (new V1CourseController)->delete($request);
+        $api = json_decode($api->getContent());
+
+        return redirect()->back()->with(
+            (array) $api
+        )->withErrors($api->errors ?? null);
+    }
 }

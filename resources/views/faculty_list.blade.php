@@ -47,7 +47,7 @@
                   <td>{{ date('d M, Y', strtotime($faculty->created_at)) }}</td>
                   <td>{{ date('d M, Y', strtotime($faculty->updated_at)) }}</td>
                   <td>
-                    <x-form.delete action="/faculty/delete" name="id" :value="$faculty->id" />
+                    <x-form.delete action="/faculty/delete" name="id" :value="$faculty->id" :text="$faculty->faculty" />
                     <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
                       data-bs-target="#updateFacultyModal" data-faculty_id="{{ $faculty->id }}"
                       data-faculty="{{ $faculty->faculty }}"><i class="bx bxs-edit"></i></button>
@@ -121,8 +121,8 @@
       });
     });
 
-    function confirmDelete() {
-      if (!confirm("Delete faculty?")) {
+    function confirmDelete(faculty) {
+      if (!confirm("Delete " + faculty + "?")) {
         event.preventDefault();
       }
     }

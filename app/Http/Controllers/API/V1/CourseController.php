@@ -388,6 +388,7 @@ class CourseController extends Controller
                 'courses.id AS course_id',
                 'courses.course',
                 'faculties.faculty',
+                'faculties.id AS faculty_id',
                 'sub_1.subject AS subject_1',
                 'sub_2.subject AS subject_2',
                 'sub_3.subject AS subject_3',

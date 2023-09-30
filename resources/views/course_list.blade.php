@@ -26,7 +26,7 @@
 
       <div class="card">
         <div class="card-body">
-          <x-alert />
+          <div class="error"><x-alert /></div>
 
           <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
             <thead>
@@ -79,10 +79,18 @@
                   <td>{{ date('d M, Y', strtotime($course->created_at)) }}</td>
                   <td>{{ date('d M, Y', strtotime($course->updated_at)) }}</td>
                   <td>
-                    <x-form.delete action="/course/delete" name="id" :value="$course->course_id" />
+                    <x-form.delete action="/course/delete" name="course_id" :value="$course->course_id" :text="$course->course" />
                     <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
-                      data-bs-target="#updatecourseModal" data-course_id="{{ $course->course_id }}"
-                      data-course="{{ $course->course }}"><i class="bx bxs-edit"></i></button>
+                      data-bs-target="#updateCourseModal" data-course_id="{{ $course->course_id }}"
+                      data-course="{{ $course->course }}" data-faculty_id="{{ $course->faculty_id }}"
+                      data-subject_code_1="{{ $course->subject_code_1 }}"
+                      data-subject_code_2="{{ $course->subject_code_2 }}"
+                      data-subject_code_3="{{ $course->subject_code_3 }}"
+                      data-subject_code_4="{{ $course->subject_code_4 }}"
+                      data-subject_code_5="{{ $course->subject_code_5 }}"
+                      data-subject_code_6="{{ $course->subject_code_6 }}"
+                      data-subject_code_7="{{ $course->subject_code_7 }}"
+                      data-subject_code_8="{{ $course->subject_code_8 }}"><i class="bx bxs-edit"></i></button>
                   </td>
                 </tr>
               @endforeach
@@ -97,22 +105,37 @@
   <!-- End Page-content -->
 
 
-  <div class="modal fade" id="updateFacultyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    role="dialog" aria-labelledby="updateFacultyModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+
+  <div class="modal fade" id="updateCourseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="updateCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="updateFacultyModalLabel">Update Faculty</h5>
+          <h5 class="modal-title" id="updateCourseModalLabel">Update Course</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
-          <form method="post" action="/{{ account_type() }}/faculty/edit">
+          <form method="post" action="/{{ account_type() }}/course/edit">
             @csrf
-            <input type="hidden" name="faculty_id" id="faculty_id">
-            <input type="hidden" name="faculty_old" id="faculty_old">
-            <div class="mb-3">Current Name: <span class="d-inline-block" id="current_text"></span></div>
-            <x-form.input name="faculty" label="New Name" type="text" parentClass="mb-4" />
+
+            <div class="error"><x-alert /></div>
+
+            @if ($errors->any())
+              <div class="alert alert-danger">
+                <ul>
+                  @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                  @endforeach
+                </ul>
+              </div>
+            @endif
+
+            <input type="hidden" name="course_id" id="course_id">
+            <input type="hidden" name="course_old" id="course_old">
+            <div class="mb-3 h3">Current Name: <span class="d-inline-block" id="current_text"></span></div>
+
+            @include('components.course_form')
 
             <div class="d-flex mt-5">
               <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -153,23 +176,60 @@
       });
     });
 
-    function confirmDelete() {
-      if (!confirm("Delete faculty?")) {
+    function confirmDelete(course) {
+      if (!confirm("Delete " + course + "?")) {
         event.preventDefault();
       }
     }
 
-
-    $('#updateFacultyModal').on('show.bs.modal', function(event) {
+    $('#updateCourseModal').on('show.bs.modal', function(event) {
       var button = $(event.relatedTarget)
       var recipient = button.data('faculty_id')
 
       var modal = $(this)
-      modal.find('#faculty_id').val({!! old('faculty_id') ?? "button.data('faculty_id')" !!})
-      modal.find('#faculty').val({!! old('faculty') ?? "button.data('faculty')" !!})
-      //#faculty_old: does not do anything. Used to retain original text in case of error
-      modal.find('#faculty_old').val({!! old('faculty_old') ?? "button.data('faculty')" !!})
-      modal.find('#current_text').text({!! old('faculty_old') ?? "button.data('faculty')" !!})
+
+      if (button.data('faculty_id')) {
+        $('.error').text("") //clear error if is set
+        modal.find('#course_id').val(button.data('course_id'))
+        modal.find('#course').val(button.data('course'))
+        //#course_old: does not do anything. Used to retain original text in case of error
+        modal.find('#course_old').val(button.data('course'))
+        modal.find('#current_text').text(button.data('course'))
+        modal.find('#faculty_id').val(button.data('faculty_id'))
+        modal.find('#subject_code_1').val(button.data('subject_code_1'))
+        modal.find('#subject_code_2').val(button.data('subject_code_2'))
+        modal.find('#subject_code_3').val(button.data('subject_code_3'))
+        modal.find('#subject_code_4').val(button.data('subject_code_4'))
+        modal.find('#subject_code_5').val(button.data('subject_code_5'))
+        modal.find('#subject_code_6').val(button.data('subject_code_6'))
+        modal.find('#subject_code_7').val(button.data('subject_code_7'))
+        modal.find('#subject_code_8').val(button.data('subject_code_8'))
+      }
+      //
+      else if ('{!! old('course_id') !!}' != '') {
+        modal.find('#course_id').val("{!! old('course_id') !!}")
+        modal.find('#course').val("{!! old('course') !!}")
+        //#course_old: does not do anything. Used to retain original text in case of error
+        modal.find('#course_old').val("{!! old('course_old') !!}")
+        modal.find('#current_text').text("{!! old('course_old') !!}")
+        modal.find('#faculty_id').val("{!! old('faculty_id') !!}")
+        modal.find('#subject_code_1').val("{!! old('subject_code_1') !!}")
+        modal.find('#subject_code_2').val("{!! old('subject_code_2') !!}")
+        modal.find('#subject_code_3').val("{!! old('subject_code_3') !!}")
+        modal.find('#subject_code_4').val("{!! old('subject_code_4') !!}")
+        modal.find('#subject_code_5').val("{!! old('subject_code_5') !!}")
+        modal.find('#subject_code_6').val("{!! old('subject_code_6') !!}")
+        modal.find('#subject_code_7').val("{!! old('subject_code_7') !!}")
+        modal.find('#subject_code_8').val("{!! old('subject_code_8') !!}")
+      }
     })
+  </script>
+
+  <script>
+    $(document).ready(function() {
+      @if (old('course_id'))
+        $('#updateCourseModal').modal('show');
+      @endif
+    });
   </script>
 @endsection
