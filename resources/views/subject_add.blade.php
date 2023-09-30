@@ -31,13 +31,11 @@
           <form method="post">
             @csrf
 
-            {{-- <div class="row"> --}}
             <x-form.input name="subject_code" label="Subject Code" placeholder="e.g. MTH" type="text" :value="old('subject_code')"
               minlength="3" maxlength="3" pattern="^[a-zA-Z]{3,3}$" parentClass="mb-4 col-md-6" />
 
             <x-form.input name="subject" label="Subject" placeholder="e.g. Mathematics" type="text" :value="old('subject')"
               minlength="3" maxlength="100" pattern="^[a-zA-Z\-\(\) ]{3,100}$" parentClass="mb-4 col-md-6" />
-            {{-- </div> --}}
 
             <x-form.button defaultText="Save Subject" />
 
