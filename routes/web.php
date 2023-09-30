@@ -71,7 +71,7 @@ Route::middleware(['auth'])
                 Route::delete('delete', [FacultyController::class, 'delete']);
             });
 
-        //course
+        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('course')
             ->group(function () {
                 Route::get('add', [CourseController::class, 'addView']);

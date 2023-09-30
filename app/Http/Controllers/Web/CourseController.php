@@ -43,4 +43,16 @@ class CourseController extends Controller
             (array) $api
         );
     } //add
+
+
+
+    public function list(Request $request)
+    {
+        $api = (new V1CourseController)->list($request);
+        $api = json_decode($api->getContent());
+
+        return view('course_list')->with([
+            'courses' => $api->courses
+        ]);
+    } //list
 }
