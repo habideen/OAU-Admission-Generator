@@ -97,6 +97,13 @@
                 <li><a href="/{{ $accountType }}/candidate/delete" key="t-candidate_all">Delete By Session</a></li>
               </ul>
             </li>
+            <li>
+              <a href="javascript: void(0);" class="has-arrow" key="t-level-1-2">Admission</a>
+              <ul class="sub-menu" aria-expanded="true">
+                <li><a href="/{{ $accountType }}/admission/criteria/update" key="t-candidate_add">Criteria
+                    Settings</a></li>
+              </ul>
+            </li>
           </ul>
         </li>
 

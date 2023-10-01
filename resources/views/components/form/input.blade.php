@@ -2,7 +2,7 @@
 
 <div class="form-group {{ $parentClass }}">
   <label for="{{ $name }}">{{ $label }}</label>
-  <input name="{{ $name }}" id="{{ $name }}" {!! $attributes->class(['form-control', $errors->has($name) ? 'is-invalid' : '']) !!}>
+  <input name="{{ $name }}" id="{{ $name }}" {!! $attributes->class(['form-control', $errors->has($name) ? 'is-invalid' : '']) !!} value="{{ $value }}">
   <div class="text-muted">{!! $bottomInfo !!}</div>
   @error($name)
     <div class="invalid-feedback">{{ $message }}</div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\AdmissionController;
 use App\Http\Controllers\Web\Auth\LoginController;
 use App\Http\Controllers\Web\CandidatesController;
 use App\Http\Controllers\Web\CatchmentController;
