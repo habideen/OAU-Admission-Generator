@@ -121,16 +121,6 @@
 
             <div class="error"><x-alert /></div>
 
-            @if ($errors->any())
-              <div class="alert alert-danger">
-                <ul>
-                  @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                  @endforeach
-                </ul>
-              </div>
-            @endif
-
             <input type="hidden" name="course_id" id="course_id">
             <input type="hidden" name="course_old" id="course_old">
             <div class="mb-3 h3">Current Name: <span class="d-inline-block" id="current_text"></span></div>

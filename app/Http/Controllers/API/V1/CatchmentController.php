@@ -16,8 +16,8 @@ class CatchmentController extends Controller
         $activeSession = activeSession();
 
         $validator = Validator::make($request->all(), [
-            'state' => [
-                'required', 'regex:/^[a-zA-Z\- ]{3,255}$/',
+            'state_id' => [
+                'required', 'exists:states,id',
                 Rule::unique('catchments')
                     ->where('session_updated', $activeSession)
             ]
@@ -32,7 +32,7 @@ class CatchmentController extends Controller
         }
 
         $save = new Catchment;
-        $save->state = strtoupper($request->state);
+        $save->state_id = strtoupper($request->state_id);
         $save->session_updated = $activeSession;
         $save->save();
 
@@ -55,8 +55,8 @@ class CatchmentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'catchment_id' => ['required', 'integer', 'exists:catchments,id'],
-            'state' => [
-                'required', 'regex:/^[a-zA-Z\- ]{3,255}$/',
+            'state_id' => [
+                'required', 'exists:states,id',
                 Rule::unique('catchments')
                     ->where('session_updated', activeSession())
                     ->ignore($request->catchment_id)
@@ -72,7 +72,7 @@ class CatchmentController extends Controller
         }
 
         $save = Catchment::find($request->catchment_id);
-        $save->state = strtoupper($request->state);
+        $save->state_id = strtoupper($request->state_id);
         $save->save();
 
         if (!$save) {
@@ -92,7 +92,16 @@ class CatchmentController extends Controller
 
     public function list(Request $request)
     {
-        $catchment = Catchment::orderBy('state', 'ASC')
+        $catchment = Catchment::select(
+            'catchments.id',
+            'catchments.state_id',
+            'states.name AS state',
+            'catchments.session_updated',
+            'catchments.created_at',
+            'catchments.updated_at'
+        )
+            ->join('states', 'states.id', '=', 'catchments.state_id')
+            ->orderBy('state', 'ASC')
             ->where('session_updated', $request->session ?? activeSession())
             ->get();
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('catchments', function (Blueprint $table) {
             $table->id();
-            $table->string('state');
+            $table->unsignedBigInteger('state_id');
             $table->string('session_updated', 9);
             $table->timestamps();
         });

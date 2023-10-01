@@ -2,7 +2,7 @@
 
 <div class="form-group {{ $parentClass }}">
   <label for="{{ $name }}">{{ $label }}</label>
-  <select name="{{ $name }}" id="{{ $name }}" {!! $attributes->class(['form-control', $errors->has($name) ? 'is-invalid' : '']) !!}>
+  <select name="{{ $name }}" id="{{ $name }}" {!! $attributes->class(['form-control form-select', $errors->has($name) ? 'is-invalid' : '']) !!}>
     <option value="">{{ $placeholder }}</option>
     @if ($optionsType == 'array')
       @foreach ($options as $key)

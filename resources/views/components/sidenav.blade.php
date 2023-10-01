@@ -41,7 +41,7 @@
 
         <li>
           <a href="javascript: void(0);" class="has-arrow waves-effect">
-            <i class="bx bx-buildings"></i>
+            <i class="bx bxs-school"></i>
             <span key="t-facultys">Faculty</span>
           </a>
           <ul class="sub-menu" aria-expanded="false">
@@ -58,6 +58,29 @@
           <ul class="sub-menu" aria-expanded="false">
             <li><a href="/{{ $accountType }}/course/add" key="t-course_add">Add Course</a></li>
             <li><a href="/{{ $accountType }}/course/list" key="t-course_all">View all courses</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="javascript: void(0);" class="has-arrow waves-effect">
+            <i class="bx bx-handicap"></i>
+            <span key="t-catchment_elds">Catchment & ELDS</span>
+          </a>
+          <ul class="sub-menu" aria-expanded="true">
+            <li>
+              <a href="javascript: void(0);" class="has-arrow" key="t-level-1-2">ELDS</a>
+              <ul class="sub-menu" aria-expanded="true">
+                <li><a href="/{{ $accountType }}/elds/add" key="t-elds_add">Add ELDS</a></li>
+                <li><a href="/{{ $accountType }}/elds/list" key="t-elds_all">View all ELDS</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="javascript: void(0);" class="has-arrow" key="t-level-1-2">Catchment</a>
+              <ul class="sub-menu" aria-expanded="true">
+                <li><a href="/{{ $accountType }}/catchment/add" key="t-catchment_add">Add catchment</a></li>
+                <li><a href="/{{ $accountType }}/catchment/list" key="t-catchment_all">View all catchment</a></li>
+              </ul>
+            </li>
           </ul>
         </li>
 

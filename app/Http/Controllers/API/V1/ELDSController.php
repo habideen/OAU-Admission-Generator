@@ -16,8 +16,8 @@ class ELDSController extends Controller
         $activeSession = activeSession();
 
         $validator = Validator::make($request->all(), [
-            'state' => [
-                'required', 'regex:/^[a-zA-Z\- ]{3,255}$/',
+            'state_id' => [
+                'required', 'exists:states,id',
                 Rule::unique('elds')
                     ->where('session_updated', $activeSession)
             ]
@@ -32,7 +32,7 @@ class ELDSController extends Controller
         }
 
         $save = new elds;
-        $save->state = strtoupper($request->state);
+        $save->state_id = $request->state_id;
         $save->session_updated = $activeSession;
         $save->save();
 
@@ -55,8 +55,8 @@ class ELDSController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'elds_id' => ['required', 'integer', 'exists:elds,id'],
-            'state' => [
-                'required', 'regex:/^[a-zA-Z\- ]{3,255}$/',
+            'state_id' => [
+                'required', 'exists:states,id',
                 Rule::unique('elds')
                     ->where('session_updated', activeSession())
                     ->ignore($request->elds_id)
@@ -72,7 +72,7 @@ class ELDSController extends Controller
         }
 
         $save = elds::find($request->elds_id);
-        $save->state = strtoupper($request->state);
+        $save->state_id = $request->state_id;
         $save->save();
 
         if (!$save) {
@@ -92,7 +92,16 @@ class ELDSController extends Controller
 
     public function list(Request $request)
     {
-        $elds = elds::orderBy('state', 'ASC')
+        $elds = elds::select(
+            'elds.id',
+            'elds.state_id',
+            'states.name AS state',
+            'elds.session_updated',
+            'elds.created_at',
+            'elds.updated_at'
+        )
+            ->join('states', 'states.id', '=', 'elds.state_id')
+            ->orderBy('state', 'ASC')
             ->where('session_updated', $request->session ?? activeSession())
             ->get();
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\Auth\LoginController;
+use App\Http\Controllers\Web\CatchmentController;
 use App\Http\Controllers\Web\CourseController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\FacultyController;
@@ -45,7 +46,7 @@ Route::middleware(['auth'])
                 Route::get('list', [UserManagementController::class, 'listUsers']);
             });
 
-        //course
+        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('subject')
             ->group(function () {
                 Route::get('add', [SubjectController::class, 'addView']);
@@ -86,6 +87,7 @@ Route::middleware(['auth'])
         //course
         Route::prefix('catchment')
             ->group(function () {
+                Route::get('add', [CatchmentController::class, 'addView']);
                 Route::post('add', [CatchmentController::class, 'add']);
                 Route::post('edit', [CatchmentController::class, 'edit']);
                 Route::get('list', [CatchmentController::class, 'list']);
