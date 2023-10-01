@@ -14,9 +14,11 @@ class SessionController extends Controller
 {
     private function loadSession(Request $request)
     {
-        return ModelsSession::orderBy('is_active', 'DESC')
-            ->orderBy('session', 'DESC')
-            ->paginate(PAGINATION);
+        $model = ModelsSession::orderBy('is_active', 'DESC')
+            ->orderBy('session', 'DESC');
+
+        return strtolower($request->get('fetch_all')) == 'true'
+            ? $model->get() : $model->paginate(PAGINATION);
     } //loadSession
 
 

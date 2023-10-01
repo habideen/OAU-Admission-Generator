@@ -107,7 +107,7 @@ Route::middleware(['auth'])
             });
 
 
-        //course
+        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('candidate')
             ->group(function () {
                 Route::get('upload', [CandidatesController::class, 'uploadView']);
@@ -119,6 +119,7 @@ Route::middleware(['auth'])
         //admission
         Route::prefix('admission')
             ->group(function () {
+                Route::get('criteria/update', [AdmissionController::class, 'admissionCriteriaView']);
                 Route::post('criteria/update', [AdmissionController::class, 'admissionCriteria']);
                 Route::get('criteria/get', [AdmissionController::class, 'getadmissionCriteria']);
                 Route::get('generate', [AdmissionController::class, 'generateAdmission']);

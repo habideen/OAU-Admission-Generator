@@ -44,8 +44,6 @@
 
       <div class="card">
         <div class="card-body">
-          <div class="error"><x-alert /></div>
-
           <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
             <thead>
               <tr>

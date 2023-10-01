@@ -21,16 +21,7 @@ class FacultyController extends Controller
         $api = (new V1FacultyController)->add($request);
         $api = json_decode($api->getContent());
 
-        if ($api->status != 'success') {
-            return redirect()->back()->with(
-                (array) $api
-            )->withErrors($api->errors ?? null)
-                ->withInput();
-        }
-
-        return redirect()->back()->with(
-            (array) $api
-        );
+        return apiResponse($api);
     } //add
 
 
@@ -40,16 +31,7 @@ class FacultyController extends Controller
         $api = (new V1FacultyController)->edit($request);
         $api = json_decode($api->getContent());
 
-        if ($api->status != 'success') {
-            return redirect()->back()->with(
-                (array) $api
-            )->withErrors($api->errors ?? null)
-                ->withInput();
-        }
-
-        return redirect()->back()->with(
-            (array) $api
-        );
+        return apiResponse($api);
     } //edit
 
 

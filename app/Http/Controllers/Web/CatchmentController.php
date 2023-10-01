@@ -24,16 +24,7 @@ class CatchmentController extends Controller
         $api = (new V1CatchmentController)->add($request);
         $api = json_decode($api->getContent());
 
-        if ($api->status != 'success') {
-            return redirect()->back()->with(
-                (array) $api
-            )->withErrors($api->errors ?? null)
-                ->withInput();
-        }
-
-        return redirect()->back()->with(
-            (array) $api
-        );
+        return apiResponse($api);
     } //add
 
 
@@ -42,16 +33,7 @@ class CatchmentController extends Controller
         $api = (new V1CatchmentController)->edit($request);
         $api = json_decode($api->getContent());
 
-        if ($api->status != 'success') {
-            return redirect()->back()->with(
-                (array) $api
-            )->withErrors($api->errors ?? null)
-                ->withInput();
-        }
-
-        return redirect()->back()->with(
-            (array) $api
-        );
+        return apiResponse($api);
     } //edit
 
 

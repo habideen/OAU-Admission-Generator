@@ -117,3 +117,23 @@ if (!function_exists('verifyEmail')) {
     ));
   }
 }
+
+
+
+
+
+if (!function_exists('apiResponse')) {
+  function apiResponse($api)
+  {
+    if ($api->status != 'success') {
+      return redirect()->back()->with(
+        (array) $api
+      )->withErrors($api->errors ?? null)
+        ->withInput();
+    }
+
+    return redirect()->back()->with(
+      (array) $api
+    );
+  }
+}
