@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\Auth\LoginController;
 use App\Http\Controllers\Web\CatchmentController;
 use App\Http\Controllers\Web\CourseController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\ELDSController;
 use App\Http\Controllers\Web\FacultyController;
 use App\Http\Controllers\Web\SessionController;
 use App\Http\Controllers\Web\SubjectController;
@@ -84,7 +85,7 @@ Route::middleware(['auth'])
                 Route::delete('delete', [CourseController::class, 'delete']);
             });
 
-        //course
+        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('catchment')
             ->group(function () {
                 Route::get('add', [CatchmentController::class, 'addView']);
@@ -94,9 +95,10 @@ Route::middleware(['auth'])
                 Route::delete('delete', [CatchmentController::class, 'delete']);
             });
 
-        //course
+        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('elds')
             ->group(function () {
+                Route::get('add', [ELDSController::class, 'addView']);
                 Route::post('add', [ELDSController::class, 'add']);
                 Route::post('edit', [ELDSController::class, 'edit']);
                 Route::get('list', [ELDSController::class, 'list']);
