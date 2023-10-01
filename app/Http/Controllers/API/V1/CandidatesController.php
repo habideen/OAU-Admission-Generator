@@ -41,6 +41,22 @@ class CandidatesController extends Controller
 
 
 
+  public function list(Request $request)
+  {
+      $candidates = Candidate::orderBy('course', 'ASC')
+          ->orderBy('fullname', 'ASC')
+          ->where('session_updated', $request->session ?? activeSession())
+          ->get();
+
+      return response([
+          'status' => 'success',
+          'message' => 'Retrieved successfully',
+          'candidates' => $candidates
+      ]);
+  } //list
+
+
+
 
   public function delete(Request $request)
   {

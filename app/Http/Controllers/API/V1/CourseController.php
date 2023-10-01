@@ -201,7 +201,7 @@ class CourseController extends Controller
             'faculty_id' => ['required', 'integer', 'exists:faculties,id'],
             'course' => [
                 'required', 'string', 'min:2', 'max:255',
-                'regex:/^[a-zA-Z0-9\-\# ]{2,255}$/',
+                'regex:/^[a-zA-Z0-9\-\#\\ ]{2,255}$/',
                 Rule::unique('courses')->ignore($request->course_id)
             ],
             'subject_code_1' => [

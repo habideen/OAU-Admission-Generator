@@ -84,6 +84,22 @@
           </ul>
         </li>
 
+        <li>
+          <a href="javascript: void(0);" class="has-arrow waves-effect">
+            <i class="bx bx-edit"></i>
+            <span key="t-admission_settings">Admission</span>
+          </a>
+          <ul class="sub-menu" aria-expanded="true">
+            <li>
+              <a href="javascript: void(0);" class="has-arrow" key="t-level-1-2">Candidates</a>
+              <ul class="sub-menu" aria-expanded="true">
+                <li><a href="/{{ $accountType }}/candidate/upload" key="t-candidate_add">Upload & View</a></li>
+                <li><a href="/{{ $accountType }}/candidate/delete" key="t-candidate_all">Delete By Session</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
         <li class="menu-title" key="t-pages">Settings</li>
 
         <li>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\Auth\LoginController;
+use App\Http\Controllers\Web\CandidatesController;
 use App\Http\Controllers\Web\CatchmentController;
 use App\Http\Controllers\Web\CourseController;
 use App\Http\Controllers\Web\DashboardController;
@@ -109,7 +110,9 @@ Route::middleware(['auth'])
         //course
         Route::prefix('candidate')
             ->group(function () {
+                Route::get('upload', [CandidatesController::class, 'uploadView']);
                 Route::post('upload', [CandidatesController::class, 'upload']);
+                Route::get('delete', [CandidatesController::class, 'deleteView']);
                 Route::delete('delete', [CandidatesController::class, 'delete']);
             });
 

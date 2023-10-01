@@ -5,7 +5,7 @@
     objValue="faculty" parentClass="col-md-6 mb-4" required />
 
   <x-form.input name="course" label="Course" type="text" :value="old('course')" parentClass="col-md-6 mb-4"
-    pattern="^[a-zA-Z0-9\-\# ]{2,255}$" minlength="2" maxlength="255" required />
+    pattern="^[a-zA-Z0-9\-\#\\ ]{2,255}$" minlength="2" maxlength="255" required />
 </div>
 
 <div class="row">
