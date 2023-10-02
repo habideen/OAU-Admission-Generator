@@ -7,6 +7,7 @@ use App\Models\Session;
 use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\MessageBag;
@@ -147,5 +148,21 @@ if (!function_exists('facultyName')) {
   function facultyName($id)
   {
     return Faculty::select('faculty')->where('id', $id)->first()->faculty ?? null;
+  }
+}
+
+
+
+
+
+if (!function_exists('unadmittedList')) {
+  function unadmittedList(array $admissionList, Collection $candidates)
+  {
+    $admissionList = collect($admissionList);
+
+    return $candidates->whereNotIn(
+      'rg_num',
+      $admissionList->pluck('rg_num')
+    );
   }
 }

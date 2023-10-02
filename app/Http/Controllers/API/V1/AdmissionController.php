@@ -87,8 +87,21 @@ class AdmissionController extends Controller
 
     public function generateAdmission(Request $request)
     {
+        // $collection = collect([
+        //     ['product' => 'Desk', 'price' => 200],
+        //     ['product' => 'Chair', 'price' => 100],
+        //     ['product' => 'Bookcase', 'price' => 150],
+        //     ['product' => 'Door', 'price' => 100],
+        // ]);
+
+        // $filtered = $collection->whereNotIn('price', [150, 200]);
+
+        // dd($filtered->all());
+
         $sessionUpdated = activeSession();
         $timestamp = now();
+
+        AdmissionList::whereNotNull('rg_num')->delete();
 
         // Step 1: Retrieve the distinct courses for the specified session_updated and sort them in ascending order
         $distinctCourses = DB::table('candidates')
@@ -98,40 +111,43 @@ class AdmissionController extends Controller
             ->distinct()
             ->orderBy('candidates.course', 'asc')
             ->get();
-        // ->pluck('course');
-        // dd($distinctCourses);
 
-        $catchmentStates = Catchment::select('states.name AS state')
+        $catchmentStates = Catchment::select(DB::raw('UPPER(states.name) AS state'))
             ->join('states', 'states.id', '=', 'catchments.state_id')
             ->get();
-        $catchmentStates = count($catchmentStates) > 0 ? (array)$catchmentStates->pluck('state') : [];
+        $catchmentStates = count($catchmentStates) > 0 ? $catchmentStates->pluck('state')->toArray() : [];
 
-        $eldsStates = elds::select('states.name AS state')
+        $eldsStates = elds::select(DB::raw('UPPER(states.name) AS state'))
             ->join('states', 'states.id', '=', 'elds.state_id')
             ->get();
-        $eldsStates = count($eldsStates) > 0 ? (array)$eldsStates->pluck('state') : [];
+        $eldsStates = count($eldsStates) > 0 ? $eldsStates->pluck('state')->toArray() : [];
+
+        // Retrieve the admission criteria percentages from admission_criterias table
+        $admissionCriteria = DB::table('admission_criterias')
+            ->select('merit', 'catchment', 'elds')
+            ->where('session', $request->session ?? activeSession())
+            ->first();
+
+        $meritPercentage = $admissionCriteria->merit;
+        $catchmentPercentage = $admissionCriteria->catchment;
+        $eldsPercentage = $admissionCriteria->elds;
+
 
         foreach ($distinctCourses as $course) {
             // Step 2: Select rg_num, aggregate, state_name from Candidates table for the current course
             $candidates = DB::table('candidates')
-                ->select('rg_num', 'aggregate', 'state_name')
-                ->where('course', $course)
+                ->select(
+                    'rg_num',
+                    'aggregate',
+                    DB::raw('UPPER(state_name) AS state_name')
+                )
+                ->where('course', $course->course)
                 ->where('session_updated', $sessionUpdated)
                 ->orderBy('aggregate', 'desc')
                 ->get();
 
-            // Step 3: Retrieve the admission criteria percentages from admission_criterias table
-            $admissionCriteria = DB::table('admission_criterias')
-                ->select('merit', 'catchment', 'elds')
-                ->where('session', $request->session ?? activeSession())
-                ->first();
-
-            $meritPercentage = $admissionCriteria->merit;
-            $catchmentPercentage = $admissionCriteria->catchment;
-            $eldsPercentage = $admissionCriteria->elds;
-
             // Calculate the number of candidates to admit based on the merit percentage
-            $meritCount = (int)(count($candidates) * ($meritPercentage / 100));
+            $meritCount = floor($course->capacity * ($meritPercentage / 100));
 
             // Initialize the admission list
             $admissionList = [];
@@ -148,8 +164,10 @@ class AdmissionController extends Controller
                 }
             }
 
+            $candidates = unadmittedList($admissionList, $candidates);
+
             // Calculate the number of candidates to admit based on the catchment percentage
-            $catchmentCount = (int)((count($candidates) - $meritCount) * ($catchmentPercentage / 100));
+            $catchmentCount = floor($course->capacity * ($catchmentPercentage / 100));
 
             // Admit remaining candidates based on catchment and state criteria
             for ($i = $meritCount; $i < $meritCount + $catchmentCount; $i++) {
@@ -163,8 +181,10 @@ class AdmissionController extends Controller
                 }
             }
 
+            $candidates = unadmittedList($admissionList, $candidates);
+
             // Calculate the number of candidates to admit based on the ELDS percentage
-            $eldsCount = (int)((count($candidates) - $meritCount - $catchmentCount) * ($eldsPercentage / 100));
+            $eldsCount = floor($course->capacity * ($eldsPercentage / 100));
 
             // Admit remaining candidates based on ELDS and state criteria
             for ($i = $meritCount + $catchmentCount; $i < $meritCount + $catchmentCount + $eldsCount; $i++) {
