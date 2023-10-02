@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('faculty_id');
             $table->string('course');
+            $table->unsignedSmallInteger('capacity');
             $table->string('is_disabled')->nullable();
             $table->string('session_updated', 9);
             $table->timestamps();

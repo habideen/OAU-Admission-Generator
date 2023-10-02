@@ -38,9 +38,10 @@ class CourseController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'faculty_id' => ['required', 'integer', 'exists:faculties,id'],
+            'capacity' => ['required', 'integer', 'min:1'],
             'course' => [
                 'required', 'string', 'min:2', 'max:255',
-                'regex:/^[a-zA-Z0-9\-\# ]{2,255}$/', 'unique:courses'
+                'regex:/^[a-zA-Z0-9\-\#\/ ]{2,255}$/', 'unique:courses'
             ],
             'subject_code_1' => [
                 'nullable',
@@ -135,6 +136,7 @@ class CourseController extends Controller
         $save = new Course;
         $save->faculty_id = $request->faculty_id;
         $save->course = $request->course;
+        $save->capacity = $request->capacity;
         $save->session_updated = activeSession();
         $save->save();
 
@@ -199,9 +201,10 @@ class CourseController extends Controller
         $validator = Validator::make($request->all(), [
             'course_id' => ['required', 'integer', 'exists:courses,id'],
             'faculty_id' => ['required', 'integer', 'exists:faculties,id'],
+            'capacity' => ['required', 'integer', 'min:1'],
             'course' => [
                 'required', 'string', 'min:2', 'max:255',
-                'regex:/^[a-zA-Z0-9\-\#\\ ]{2,255}$/',
+                'regex:/^[a-zA-Z0-9\-\#\/ ]{2,255}$/',
                 Rule::unique('courses')->ignore($request->course_id)
             ],
             'subject_code_1' => [
@@ -297,6 +300,7 @@ class CourseController extends Controller
         $save = Course::where('id', $request->course_id)->update([
             'faculty_id' => $request->faculty_id,
             'course' => $request->course,
+            'capacity' => $request->capacity,
             'session_updated' => activeSession()
         ]);
 
@@ -387,6 +391,7 @@ class CourseController extends Controller
             ->select(
                 'courses.id AS course_id',
                 'courses.course',
+                'courses.capacity',
                 'faculties.faculty',
                 'faculties.id AS faculty_id',
                 'sub_1.subject AS subject_1',
@@ -410,7 +415,7 @@ class CourseController extends Controller
                 'subject_combinations.updated_at'
             )
             ->join('faculties', 'faculties.id', '=', 'courses.faculty_id')
-            ->join('subject_combinations', function ($join) {
+            ->leftJoin('subject_combinations', function ($join) {
                 $join->on('courses.id', '=', 'subject_combinations.course_id')
                     ->whereRaw(
                         'subject_combinations.created_at = (select MAX(created_at) 

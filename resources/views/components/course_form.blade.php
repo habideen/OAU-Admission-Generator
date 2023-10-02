@@ -1,11 +1,14 @@
 <div class="text-muted mb-4 h5">Please select at least 4 subjects.</div>
 
-<div class="row">
+<div class="row mb-4">
   <x-form.select name="faculty_id" label="Faculty" :selected="old('faculty_id')" optionsType="object" :options="$faculties" objKey="id"
-    objValue="faculty" parentClass="col-md-6 mb-4" required />
+    objValue="faculty" parentClass="col-md-4 mb-4" required />
 
-  <x-form.input name="course" label="Course" type="text" :value="old('course')" parentClass="col-md-6 mb-4"
-    pattern="^[a-zA-Z0-9\-\#\\ ]{2,255}$" minlength="2" maxlength="255" required />
+  <x-form.input name="course" label="Course" type="text" :value="old('course')" parentClass="col-md-4 mb-4"
+    pattern="^[a-zA-Z0-9\-\#\\ ]{2,255}$" minlength="2" maxlength="255" placeholder="e.g. Computer Science" required />
+
+  <x-form.input name="capacity" label="Course Capacity" type="number" parentClass="col-md-4 mb-4" min="1"
+    step="1" required :value="old('capacity')" placeholder="Number of student to admit e.g. 120" />
 </div>
 
 <div class="row">

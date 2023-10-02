@@ -14,6 +14,7 @@ use App\Rules\AccountTypeValidation;
 use App\Rules\SessionValidation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -86,20 +87,28 @@ class AdmissionController extends Controller
 
     public function generateAdmission(Request $request)
     {
-        $sessionUpdated = '2022/2023';
+        $sessionUpdated = activeSession();
         $timestamp = now();
 
         // Step 1: Retrieve the distinct courses for the specified session_updated and sort them in ascending order
         $distinctCourses = DB::table('candidates')
-            ->where('session_updated', $sessionUpdated)
+            ->select('candidates.course', 'courses.capacity')
+            ->join('courses', 'courses.course', '=', 'candidates.course')
+            ->where('candidates.session_updated', $sessionUpdated)
             ->distinct()
-            ->orderBy('course', 'asc')
-            ->pluck('course');
+            ->orderBy('candidates.course', 'asc')
+            ->get();
+        // ->pluck('course');
+        // dd($distinctCourses);
 
-        $catchmentStates = Catchment::select('state')->get();
+        $catchmentStates = Catchment::select('states.name AS state')
+            ->join('states', 'states.id', '=', 'catchments.state_id')
+            ->get();
         $catchmentStates = count($catchmentStates) > 0 ? (array)$catchmentStates->pluck('state') : [];
 
-        $eldsStates = elds::select('state')->get();
+        $eldsStates = elds::select('states.name AS state')
+            ->join('states', 'states.id', '=', 'elds.state_id')
+            ->get();
         $eldsStates = count($eldsStates) > 0 ? (array)$eldsStates->pluck('state') : [];
 
         foreach ($distinctCourses as $course) {
@@ -190,6 +199,53 @@ class AdmissionController extends Controller
             'message' => 'Admission generated successfully'
         ], Response::HTTP_CREATED);
     } //generateAdmission
+
+
+
+
+    public function getCandidatesAdmitted(Request $request)
+    {
+        $query = AdmissionList::select(
+            'candidates.rg_num',
+            'candidates.fullname',
+            'candidates.rg_sex',
+            'candidates.aggregate',
+            'candidates.course',
+            'admission_lists.category',
+            'candidates.session_updated',
+            'admission_lists.updated_at'
+        )
+            ->join('candidates', 'candidates.rg_num', '=', 'admission_lists.rg_num')
+            ->join('courses', 'courses.course', '=', 'candidates.course');
+
+
+        if ($request->faculty) {
+            $query = $query->join('faculties', 'faculties.id', '=', 'courses.faculty_id');
+            $query = $query->where('faculties.id', $request->faculty);
+        }
+
+        if ($request->course) {
+            $query = $query->where('candidates.course', $request->course);
+        } elseif ($request->course == 'All') { //elseif ($request->course == 'All')
+            if (!in_array(Auth::user()->account_type, ['Admin', 'Super Admin'])) {
+                // select only the departments in that faculty when user is Dean
+                $courses = Course::select('course')
+                    ->where('faculty_id', Auth::user()->faculty_id)->get();
+                $courses = count($courses) > 0 ? $courses->pluck('course') : [];
+
+                $query = $query->whereIn('candidates.course', $courses);
+            }
+        }
+
+        $query = $query->where('candidates.session_updated', $request->session ?? activeSession())
+            ->orderBy('admission_lists.category', 'DESC');
+
+        return response([
+            'status' => 'success',
+            'message' => 'Retrieved successfully',
+            'admissions' => $query->get()
+        ]);
+    } //getCandidatesAdmitted
 
 
 

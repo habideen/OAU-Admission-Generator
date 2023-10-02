@@ -28,16 +28,17 @@
         <div class="card-body">
           <div class="error"><x-alert /></div>
 
-          <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
+          <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Faculty</th>
                 <th>Course</th>
+                <th>Capacity</th>
                 <th>Subject Combination</th>
                 <th>Created At</th>
                 <th>Updated At</th>
-                <th></th>
+                <th>Action</th>
               </tr>
             </thead>
 
@@ -47,6 +48,7 @@
                   <td>{{ $course->course_id }}</td>
                   <td>{{ $course->faculty }}</td>
                   <td>{{ $course->course }}</td>
+                  <td>{{ $course->capacity }}</td>
                   <td>
                     @php
                       $c = 0;
@@ -82,8 +84,8 @@
                     <x-form.delete action="/course/delete" name="course_id" :value="$course->course_id" :text="$course->course" />
                     <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
                       data-bs-target="#updateCourseModal" data-course_id="{{ $course->course_id }}"
-                      data-course="{{ $course->course }}" data-faculty_id="{{ $course->faculty_id }}"
-                      data-subject_code_1="{{ $course->subject_code_1 }}"
+                      data-course="{{ $course->course }}" data-capacity="{{ $course->capacity }}"
+                      data-faculty_id="{{ $course->faculty_id }}" data-subject_code_1="{{ $course->subject_code_1 }}"
                       data-subject_code_2="{{ $course->subject_code_2 }}"
                       data-subject_code_3="{{ $course->subject_code_3 }}"
                       data-subject_code_4="{{ $course->subject_code_4 }}"
@@ -155,6 +157,22 @@
   <!-- Required datatable js -->
   <script src="/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
   <script src="/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <!-- Buttons examples -->
+  <script src="/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+  <script src="/assets/libs/jszip/jszip.min.js"></script>
+  <script src="/assets/libs/pdfmake/build/pdfmake.min.js"></script>
+  <script src="/assets/libs/pdfmake/build/vfs_fonts.js"></script>
+  <script src="/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+  <script src="/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+  <script src="/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+  <!-- Responsive examples -->
+  <script src="/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+
+  <!-- Datatable init js -->
+  <script src="/assets/js/pages/datatables.init.js"></script>
 
   <!-- Datatable init js -->
   <script>
@@ -184,6 +202,7 @@
         modal.find('#course').val(button.data('course'))
         //#course_old: does not do anything. Used to retain original text in case of error
         modal.find('#course_old').val(button.data('course'))
+        modal.find('#capacity').val(button.data('capacity'))
         modal.find('#current_text').text(button.data('course'))
         modal.find('#faculty_id').val(button.data('faculty_id'))
         modal.find('#subject_code_1').val(button.data('subject_code_1'))
@@ -201,6 +220,7 @@
         modal.find('#course').val("{!! old('course') !!}")
         //#course_old: does not do anything. Used to retain original text in case of error
         modal.find('#course_old').val("{!! old('course_old') !!}")
+        modal.find('#capacity').val("{!! old('capacity') !!}")
         modal.find('#current_text').text("{!! old('course_old') !!}")
         modal.find('#faculty_id').val("{!! old('faculty_id') !!}")
         modal.find('#subject_code_1').val("{!! old('subject_code_1') !!}")

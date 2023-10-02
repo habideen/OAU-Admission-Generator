@@ -1,6 +1,6 @@
 @extends('layouts.panel')
 
-@section('page_title', 'Candidate Upload')
+@section('page_title', 'Generate Admission')
 
 
 @section('content')
@@ -11,12 +11,12 @@
       <div class="row">
         <div class="col-12">
           <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0 font-size-18">Candidate Upload</h4>
+            <h4 class="mb-sm-0 font-size-18">Generate Admission</h4>
 
             <div class="page-title-right">
               <ol class="breadcrumb m-0">
                 <li class="breadcrumb-item"><a href="/{{ account_type() }}/dashboard">Dashboard</a></li>
-                <li class="breadcrumb-item active">Candidate Upload</li>
+                <li class="breadcrumb-item active">Generate Admission</li>
               </ol>
             </div>
           </div>
@@ -28,22 +28,62 @@
         <div class="card-body">
           <x-alert />
 
-          <form method="post" enctype="multipart/form-data" id="uploadForm">
-            @csrf
+          <div class="row justify-content-between">
+            @if (in_array(Auth::user()->account_type, ['Admin', 'Super Admin']))
+              <div class="mb-4 col-md-5">
+                <a href="/{{ account_type() }}/admission/calculate" class="btn btn-success btn-lg disableBtn"
+                  aria-disabled="true">Generate Admission List</a>
+              </div>
+              <div class="col-12 mt-2 mb-2">
+                <hr>
+              </div>
+            @endif
 
-            <x-form.input name="candidates_file" label="Candidates File" type="file"
-              parentClass="mb-4 col-md-5 col-sm-6" accept=".xls,.xlsx" required
-              bottomInfo="Only excel file (xls, xlxs) is accepted.<br/>All the sheets in the file will be traversed." />
+            <div class="mb-4 col-12">
+              <div class="h5 text-muted mb-3">Filter admission list</div>
+              <form>
+                {{-- @csrf --}}
 
-            <x-form.button defaultText="Upload Candidates" id="uploadBtn" />
+                <div class="row">
+                  <x-form.select name="faculty" label="Faculty" :selected="old('faculty')" optionsType="object" :options="$faculties"
+                    objKey="id" objValue="faculty" parentClass="mb-4 col-lg-3 col-md-4 col-sm-6" firstOption="All"
+                    firstOptionValue="-" />
 
-          </form>
+                  <x-form.select name="course" label="Course" :selected="old('course')" optionsType="object" :options="$courses"
+                    objKey="course" objValue="course" parentClass="mb-4 col-lg-3 col-md-4 col-sm-6" firstOption="All"
+                    firstOptionValue="-" />
+
+                  <x-form.select name="session" label="Session" :selected="old('session')" optionsType="object" :options="$sessions"
+                    objKey="session" objValue="session" parentClass="mb-4 col-lg-3 col-md-4 col-sm-6" />
+                </div>
+
+                <x-form.button defaultText="Fetch" />
+              </form>
+            </div>
+          </div>
         </div>
       </div>
       <!-- card -->
 
       <div class="card">
         <div class="card-body">
+          @if (Request::get('faculty') || Request::get('course') || Request::get('session'))
+            <div class="mb-3">
+              <div>Filter options:</div>
+              @if (Request::get('faculty'))
+                <div>Faculty: {{ facultyName(Request::get('faculty')) }}</div>
+              @endif
+              @if (Request::get('course'))
+                <div>Course: {{ Request::get('course') }}</div>
+              @endif
+              @if (Request::get('session'))
+                <div>Session: {{ Request::get('session') }}</div>
+              @endif
+              <div class="mt-2 mb-2">
+                <hr>
+              </div>
+            </div>
+          @endif
           <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
             <thead>
               <tr>
@@ -51,39 +91,27 @@
                 <th>Reg. No.</th>
                 <th>Fullname</th>
                 <th>Gender</th>
-                <th>State</th>
-                <th>Subjects</th>
                 <th>Course</th>
-                <th>UTME Score</th>
-                <th>O'level Score</th>
-                <th>PUTME Score</th>
-                <th>PUTME Screening</th>
+                <th>Category</th>
                 <th>Aggregate</th>
                 <th>Session Uploaded</th>
-                <th>Created At</th>
+                <th>Date Created</th>
               </tr>
             </thead>
 
             <tbody>
               @php $c = 0; @endphp
-              @foreach ($candidates as $candidate)
+              @foreach ($admissions as $candidate)
                 <tr>
                   <td>{{ ++$c }}</td>
                   <td>{{ $candidate->rg_num }}</td>
                   <td>{{ $candidate->fullname }}</td>
                   <td>{{ $candidate->rg_sex }}</td>
-                  <td>{{ $candidate->state_name }}</td>
-                  <td>{{ $candidate->subject_code_1 }}, {{ $candidate->subject_code_2 }},
-                    {{ $candidate->subject_code_3 }}
-                  </td>
                   <td>{{ $candidate->course }}</td>
-                  <td>{{ $candidate->utme_score }}</td>
-                  <td>{{ $candidate->olevel_score }}</td>
-                  <td>{{ $candidate->putme_score }}</td>
-                  <td>{{ $candidate->putme_screening }}</td>
+                  <td>{{ $candidate->category }}</td>
                   <td>{{ $candidate->aggregate }}</td>
                   <td>{{ $candidate->session_updated }}</td>
-                  <td>{{ date('d M, Y', strtotime($candidate->created_at)) }}</td>
+                  <td>{{ date('d M, Y', strtotime($candidate->updated_at)) }}</td>
                 </tr>
               @endforeach
             </tbody>
@@ -103,11 +131,6 @@
   <!-- DataTables -->
   <link href="/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
   <link href="/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
-  <style>
-    .dataTables_wrapper {
-      width: 100% !important;
-    }
-  </style>
 @endsection
 
 

@@ -2,6 +2,7 @@
 
 use App\Models\Course;
 use App\Models\EmailVerification;
+use App\Models\Faculty;
 use App\Models\Session;
 use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -135,5 +136,16 @@ if (!function_exists('apiResponse')) {
     return redirect()->back()->with(
       (array) $api
     );
+  }
+}
+
+
+
+
+
+if (!function_exists('facultyName')) {
+  function facultyName($id)
+  {
+    return Faculty::select('faculty')->where('id', $id)->first()->faculty ?? null;
   }
 }

@@ -1,9 +1,12 @@
-@props(['name', 'label' => null, 'selected' => null, 'parentClass' => null, 'placeholder' => null, 'options' => [], 'optionsType', 'objKey' => null, 'objValue' => null])
+@props(['name', 'label' => null, 'selected' => null, 'parentClass' => null, 'placeholder' => null, 'options' => [], 'optionsType', 'objKey' => null, 'objValue' => null, 'firstOption' => null, 'firstOptionValue' => null])
 
 <div class="form-group {{ $parentClass }}">
   <label for="{{ $name }}">{{ $label }}</label>
   <select name="{{ $name }}" id="{{ $name }}" {!! $attributes->class(['form-control form-select', $errors->has($name) ? 'is-invalid' : '']) !!}>
     <option value="">{{ $placeholder }}</option>
+    @if ($firstOption)
+      <option value="{{ $firstOptionValue == '-' ? '' : $firstOption }}">{{ $firstOption }}</option>
+    @endif
     @if ($optionsType == 'array')
       @foreach ($options as $key)
         <option value="{{ $key }}" @selected($key == $selected)>{{ $key }}</option>

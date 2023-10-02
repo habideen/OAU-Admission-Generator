@@ -102,6 +102,7 @@
               <ul class="sub-menu" aria-expanded="true">
                 <li><a href="/{{ $accountType }}/admission/criteria/update" key="t-candidate_add">Criteria
                     Settings</a></li>
+                <li><a href="/{{ $accountType }}/admission/generate" key="t-candidate_add">Generate Admission</a></li>
               </ul>
             </li>
           </ul>

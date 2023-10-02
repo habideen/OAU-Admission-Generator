@@ -122,9 +122,9 @@ Route::middleware(['auth'])
             ->group(function () {
                 Route::get('criteria/update', [AdmissionController::class, 'admissionCriteriaView']);
                 Route::post('criteria/update', [AdmissionController::class, 'admissionCriteria']);
-                Route::get('criteria/get', [AdmissionController::class, 'getadmissionCriteria']);
-                Route::get('generate', [AdmissionController::class, 'generateAdmission']);
-                Route::get('download', [AdmissionController::class, 'downloadAdmission']);
+                Route::get('generate', [AdmissionController::class, 'generateAdmissionView']);
+                Route::get('calculate', [AdmissionController::class, 'generateAdmission']);
+                // Route::get('download', [AdmissionController::class, 'downloadAdmission']);
                 Route::get('add_by_discretion', [AdmissionController::class, 'addByAdmission']);
             });
     });
