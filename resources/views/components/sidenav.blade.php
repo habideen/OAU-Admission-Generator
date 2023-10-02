@@ -100,9 +100,11 @@
             <li>
               <a href="javascript: void(0);" class="has-arrow" key="t-level-1-2">Admission</a>
               <ul class="sub-menu" aria-expanded="true">
-                <li><a href="/{{ $accountType }}/admission/criteria/update" key="t-candidate_add">Criteria
+                <li><a href="/{{ $accountType }}/admission/criteria/update" key="t-admission_criteria">Criteria
                     Settings</a></li>
-                <li><a href="/{{ $accountType }}/admission/generate" key="t-candidate_add">Generate Admission</a></li>
+                <li><a href="/{{ $accountType }}/admission/generate" key="t-admission_generate">Generate Admission</a></li>
+                <li><a href="/{{ $accountType }}/admission/statistics" key="t-admission_stat">Admission Statistics</a>
+                </li>
               </ul>
             </li>
           </ul>

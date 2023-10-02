@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('admission_lists', function (Blueprint $table) {
             $table->string('rg_num', 15);
             $table->string('category', 15);
+            $table->string('course');
             $table->timestamps();
 
             $table->primary('rg_num');

@@ -70,4 +70,17 @@ class AdmissionController extends Controller
 
         return apiResponse($api);
     } //generateAdmission
+
+
+
+    public function admissionStat(Request $request)
+    {
+
+        $api = (new V1AdmissionController)->admissionStat($request);
+        $api = json_decode($api->getContent());
+
+        return view('admission_criteria_statistics')->with([
+            'stats' => $api->stats
+        ]);
+    } //admissionStat
 }

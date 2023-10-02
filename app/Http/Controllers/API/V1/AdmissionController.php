@@ -87,17 +87,6 @@ class AdmissionController extends Controller
 
     public function generateAdmission(Request $request)
     {
-        // $collection = collect([
-        //     ['product' => 'Desk', 'price' => 200],
-        //     ['product' => 'Chair', 'price' => 100],
-        //     ['product' => 'Bookcase', 'price' => 150],
-        //     ['product' => 'Door', 'price' => 100],
-        // ]);
-
-        // $filtered = $collection->whereNotIn('price', [150, 200]);
-
-        // dd($filtered->all());
-
         $sessionUpdated = activeSession();
         $timestamp = now();
 
@@ -158,6 +147,7 @@ class AdmissionController extends Controller
                     $admissionList[] = [
                         'rg_num' => $candidates[$i]->rg_num,
                         'category' => 'Merit',
+                        'course' => $course->course,
                         'created_at' => $timestamp,
                         'updated_at' => $timestamp
                     ];
@@ -175,6 +165,7 @@ class AdmissionController extends Controller
                     $admissionList[] = [
                         'rg_num' => $candidates[$i]->rg_num,
                         'category' => 'Catchment',
+                        'course' => $course->course,
                         'created_at' => $timestamp,
                         'updated_at' => $timestamp
                     ];
@@ -192,6 +183,7 @@ class AdmissionController extends Controller
                     $admissionList[] = [
                         'rg_num' => $candidates[$i]->rg_num,
                         'category' => 'ELDS',
+                        'course' => $course->course,
                         'created_at' => $timestamp,
                         'updated_at' => $timestamp
                     ];
@@ -230,7 +222,7 @@ class AdmissionController extends Controller
             'candidates.fullname',
             'candidates.rg_sex',
             'candidates.aggregate',
-            'candidates.course',
+            'admission_lists.course',
             'admission_lists.category',
             'candidates.session_updated',
             'admission_lists.updated_at'
@@ -318,11 +310,36 @@ class AdmissionController extends Controller
 
 
 
-    public function temp(Request $request)
+    public function admissionStat(Request $request)
     {
-        return (new GetAdmissionList([
-            'session' => '2022/2023',
-            'type' => 'Computer Engineering'
-        ]))->download('invoices.xlsx');
-    }
+        if (!in_array(Auth::user()->account_type, ['Admin', 'Super Admin'])) {
+            $courses = Course::select('course')
+                ->where('faculty_id', Auth::user()->faculty_id)->get();
+        } else {
+            $courses = Course::select('course')->get();
+        }
+
+        $stats = AdmissionList::select(
+            'faculties.faculty',
+            'candidates.course',
+            DB::raw("SUM(admission_lists.category = 'Merit') AS merit"),
+            DB::raw("SUM(admission_lists.category = 'Catchment') AS catchment"),
+            DB::raw("SUM(admission_lists.category = 'Discretion') AS discretion"),
+            'courses.capacity',
+            'candidates.session_updated'
+        )
+            ->join('candidates', 'candidates.rg_num', '=', 'admission_lists.rg_num')
+            ->join('courses', 'courses.course', '=', 'candidates.course')
+            ->join('faculties', 'faculties.id', '=', 'courses.faculty_id')
+            ->where('candidates.session_updated', activeSession())
+            ->groupBy('course', 'capacity', 'faculty', 'session_updated')
+            ->get();
+
+
+        return response([
+            'status' => 'success',
+            'message' => 'Retrieved successfully',
+            'stats' => $stats
+        ]);
+    } //admissionStat
 }
