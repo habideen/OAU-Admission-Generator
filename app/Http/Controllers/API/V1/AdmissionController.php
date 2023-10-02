@@ -324,6 +324,7 @@ class AdmissionController extends Controller
             'candidates.course',
             DB::raw("SUM(admission_lists.category = 'Merit') AS merit"),
             DB::raw("SUM(admission_lists.category = 'Catchment') AS catchment"),
+            DB::raw("SUM(admission_lists.category = 'ELDS') AS elds"),
             DB::raw("SUM(admission_lists.category = 'Discretion') AS discretion"),
             'courses.capacity',
             'candidates.session_updated'
@@ -332,6 +333,7 @@ class AdmissionController extends Controller
             ->join('courses', 'courses.course', '=', 'candidates.course')
             ->join('faculties', 'faculties.id', '=', 'courses.faculty_id')
             ->where('candidates.session_updated', activeSession())
+            ->whereIn('candidates.course', $courses->pluck('course') ?? [])
             ->groupBy('course', 'capacity', 'faculty', 'session_updated')
             ->get();
 
@@ -342,4 +344,32 @@ class AdmissionController extends Controller
             'stats' => $stats
         ]);
     } //admissionStat
+
+
+
+
+    public function totalCandidates()
+    {
+        $courses = null;
+
+        if (!in_array(Auth::user()->account_type, ['Admin', 'Super Admin'])) {
+            $courses = Course::select('course')
+                ->where('faculty_id', Auth::user()->faculty_id)->get();
+        }
+        //  else {
+        //     $courses = Course::select('course')->get();
+        // }
+
+        $num = Candidate::select(DB::raw('COUNT(course) AS num'));
+        if ($courses) {
+            $num = $num->whereIn('course', $courses->pluck('course') ?? []);
+        }
+        $num = $num->first()->num;
+
+        return response([
+            'status' => 'success',
+            'message' => 'Retrieved successfully',
+            'num' => $num
+        ]);
+    } //totalCandidates
 }

@@ -75,12 +75,15 @@ class AdmissionController extends Controller
 
     public function admissionStat(Request $request)
     {
+        $stats = (new V1AdmissionController)->admissionStat($request);
+        $stats = json_decode($stats->getContent());
 
-        $api = (new V1AdmissionController)->admissionStat($request);
-        $api = json_decode($api->getContent());
+        $totalCandidates = (new V1AdmissionController)->totalCandidates($request);
+        $totalCandidates = json_decode($totalCandidates->getContent());
 
         return view('admission_criteria_statistics')->with([
-            'stats' => $api->stats
+            'stats' => $stats->stats,
+            'totalCandidates' => $totalCandidates->num,
         ]);
     } //admissionStat
 }

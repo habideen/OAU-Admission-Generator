@@ -33,6 +33,7 @@
                 <th>Course</th>
                 <th>Merit</th>
                 <th>Catchment</th>
+                <th>ELDS</th>
                 <th>Discretion</th>
                 <th>Capacity</th>
                 <th>Space Left</th>
@@ -47,14 +48,29 @@
                   <td>{{ $stat->course }}</td>
                   <td>{{ $stat->merit }}</td>
                   <td>{{ $stat->catchment }}</td>
+                  <td>{{ $stat->elds }}</td>
                   <td>{{ $stat->discretion }}</td>
                   <td>{{ $stat->capacity }}</td>
-                  <td>{{ $stat->capacity - $stat->merit - $stat->catchment - $stat->discretion }}</td>
+                  <td>{{ $stat->capacity - $stat->merit - $stat->catchment - $stat->discretion - $stat->elds }}</td>
                   <td>{{ $stat->session_updated }}</td>
                 </tr>
               @endforeach
             </tbody>
           </table>
+
+          <div class="mt-4 h5">
+            <div class="h4 mb-2"><b><u>Total</u></b></div>
+            <div class="mb-1">Merit: <span id="totalMerit"></span></div>
+            <div class="mb-1">Catchment: <span id="totalCatchment"></span></div>
+            <div class="mb-1">ELDS: <span id="totalELDS"></span></div>
+            <div class="mb-3">Discretion: <span id="totalDiscretion"></span></div>
+
+            <div class="mb-1">Capacity: <span id="totalCapacity"></span></div>
+            <div class="mb-3">Space Left: <span id="totalSpaceLeft"></span></div>
+
+            <div class="mb-1">Candidate Application: {{ $totalCandidates }}</div>
+            <div class="mb-1">Candidate Admitted: <span id="totalAdmitted"></span></div>
+          </div>
         </div>
       </div>
       <!-- card -->
@@ -94,4 +110,41 @@
 
   <!-- Datatable init js -->
   <script src="/assets/js/pages/datatables.init.js"></script>
+
+
+
+
+  totalCandidates
+  totalAdmitted
+  <script>
+    $(document).ready(function() {
+      // Function to calculate the sum of a column
+      function calculateColumnSum(columnIndex) {
+        var total = 0;
+        $('#datatable-buttons tbody tr').each(function() {
+          var cellValue = $(this).find('td:eq(' + columnIndex + ')').text();
+          // Parse the cell value as a number and add it to the total
+          total += parseFloat(cellValue) || 0;
+        });
+        return total;
+      }
+      let totalMerit = calculateColumnSum(2);
+      let totalCatchment = calculateColumnSum(3);
+      let totalELDS = calculateColumnSum(4);
+      let totalDiscretion = calculateColumnSum(5);
+      let totalCapacity = calculateColumnSum(6);
+      let totalSpaceLeft = calculateColumnSum(7);
+
+      // Calculate the sum of the second column (Column 2)
+      $('#totalMerit').text(totalMerit);
+      $('#totalCatchment').text(totalCatchment);
+      $('#totalELDS').text(totalELDS);
+      $('#totalDiscretion').text(totalDiscretion);
+
+      $('#totalCapacity').text(totalCapacity);
+      $('#totalSpaceLeft').text(totalSpaceLeft);
+
+      $('#totalAdmitted').text(totalMerit + totalCatchment + totalELDS + totalDiscretion);
+    });
+  </script>
 @endsection
