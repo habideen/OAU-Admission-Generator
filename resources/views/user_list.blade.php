@@ -206,6 +206,12 @@
       @if (old('user_id'))
         $('#updateUserModal').modal('show');
       @endif
+
+      $('#account_type').change(function() {
+        if(!confirm('Make this user ' + this.value)) {
+          this.value = "";
+        }
+      })
     });
   </script>
 @endsection

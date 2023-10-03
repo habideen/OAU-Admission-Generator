@@ -27,9 +27,9 @@
       <div class="card">
         <div class="card-body">
           <x-alert />
-          @if($errors->any())
-          {{ implode('', $errors->all('<div>:message</div>')) }}
-      @endif
+          @if ($errors->any())
+            {{ implode('', $errors->all('<div>:message</div>')) }}
+          @endif
           <form method="post">
             @csrf
 
@@ -45,4 +45,18 @@
     <!-- container-fluid -->
   </div>
   <!-- End Page-content -->
+@endsection
+
+
+
+@section('script')
+  <script>
+    $(document).ready(function() {
+      $('#account_type').change(function() {
+        if (!confirm('Make this user ' + this.value)) {
+          this.value = "";
+        }
+      })
+    });
+  </script>
 @endsection
