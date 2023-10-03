@@ -57,24 +57,41 @@
                   <td>{{ date('d M, Y', strtotime($user->created_at)) }}</td>
                   <td>{{ date('d M, Y', strtotime($user->updated_at)) }}</td>
                   <td>
-                    <x-form.delete action="/user/delete" name="id" :value="$user->id" :text="$user->title .
-                        ' ' .
-                        $user->first_name .
-                        ' ' .
-                        $user->middle_name .
-                        ' ' .
-                        strtoupper($user->last_name)" />
-                    <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
-                      data-bs-target="#updateUserModal" 
-                      data-user_id="{{ $user->id }}" 
-                      data-email="{{ $user->email }}"                      
-                      data-title="{{ $user->title }}" 
-                      data-first_name="{{ $user->first_name }}"                      
-                      data-middle_name="{{ $user->middle_name }}" 
-                      data-last_name="{{ $user->last_name }}"
-                      data-phone="{{ $user->phone_1 }}"
-                      data-account_type="{{ $user->account_type }}"
-                      data-faculty_id="{{ $user->faculty_id }}"><i class="bx bxs-edit"></i></button>
+                    @if (Auth::user()->id != $user->id)
+                      <x-form.delete action="/user/delete" name="id" :value="$user->id" :text="$user->title .
+                          ' ' .
+                          $user->first_name .
+                          ' ' .
+                          $user->middle_name .
+                          ' ' .
+                          strtoupper($user->last_name)" />
+                      <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
+                        data-bs-target="#updateUserModal" 
+                        data-user_id="{{ $user->id }}" 
+                        data-email="{{ $user->email }}"                      
+                        data-title="{{ $user->title }}" 
+                        data-first_name="{{ $user->first_name }}"                      
+                        data-middle_name="{{ $user->middle_name }}" 
+                        data-last_name="{{ $user->last_name }}"
+                        data-phone="{{ $user->phone_1 }}"
+                        data-account_type="{{ $user->account_type }}"
+                        data-faculty_id="{{ $user->faculty_id }}"><i class="bx bxs-edit"></i></button>
+                        
+                      <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
+                        data-bs-target="#changPasswordModal" 
+                        data-user_id="{{ $user->id }}" 
+                        data-email="{{ $user->email }}"                      
+                        data-fullname="{{ $user->title . ' ' . $user->first_name . ' ' . $user->middle_name . ' ' . strtoupper($user->last_name) }}"
+                        ><i class="bx bx-key"></i></button>
+                        
+                      @if ($user->isDisabled)
+                        <a href="/{{account_type()}}/user/disable_or_enable?user_id={{ $user->id }}&new_status=enable&fullname={{ urlencode($user->title . ' ' . $user->first_name . ' ' . $user->middle_name . ' ' . strtoupper($user->last_name)) }}" 
+                          class="btn btn-success ms-3">Enable</a>
+                      @else
+                        <a href="/{{account_type()}}/user/disable_or_enable?user_id={{ $user->id }}&new_status=disable&fullname={{ urlencode($user->title . ' ' . $user->first_name . ' ' . $user->middle_name . ' ' . strtoupper($user->last_name)) }}" 
+                          class="btn btn-danger ms-3">Disable</a>
+                      @endif
+                    @endif
                   </td>
                 </tr>
               @endforeach
@@ -88,39 +105,79 @@
   </div>
   <!-- End Page-content -->
 
-  <div class="modal fade" id="updateUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    role="dialog" aria-labelledby="updateUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="updateUserModalLabel">Update User</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
 
-          <form method="post" action="/{{ account_type() }}/user/edit">
-            @csrf
 
-            <div class="error"><x-alert /></div>
+  <div class="modal fade" id="changPasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  role="dialog" aria-labelledby="changPasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="changPasswordModalLabel">Update Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
 
-            <input type="hidden" name="user_id" id="user_id">
-            <input type="hidden" name="email_old" id="email_old">
-            <div class="mb-3 h3">Current Email: <span class="d-inline-block" id="current_text"></span></div>
+        <form method="post" action="/{{ account_type() }}/user/password">
+          @csrf
 
-            @include('components.user_form')
+          <div class="error"><x-alert /></div>
 
-            <div class="d-flex mt-5">
-              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-              <div class="ms-auto">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-              </div>
+          <input type="hidden" name="user_id" id="user_id">
+          <input type="hidden" name="email_old" id="email_old">
+          <input type="hidden" name="fullname" id="fullname">
+          <div class="mb-3 h5">Fullname: <span id="fullname_text"></span></div>
+          <div class="mb-3 h5">Current Email: <span id="current_email"></span></div>
+
+          <x-form.input name="password" label="Password *" type="text" parentClass="col-sm-6 mb-4"
+            placeholder="e.g. => 8 chars" minlength="2" required />
+
+          <div class="d-flex mt-5">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            <div class="ms-auto">
+              <button type="submit" class="btn btn-primary">Change Password</button>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-  <!-- Static Backdrop Modal -->
+</div>
+<!-- Change Password Modal -->
+
+
+  <div class="modal fade" id="updateUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  role="dialog" aria-labelledby="updateUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateUserModalLabel">Update User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form method="post" action="/{{ account_type() }}/user/edit">
+          @csrf
+
+          <div class="error"><x-alert /></div>
+
+          <input type="hidden" name="user_id" id="user_id">
+          <input type="hidden" name="email_old" id="email_old">
+          <div class="mb-3 h3">Current Email: <span class="d-inline-block" id="current_text"></span></div>
+
+          @include('components.user_form')
+
+          <div class="d-flex mt-5">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            <div class="ms-auto">
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Static Backdrop Modal -->
 @endsection
 
 
@@ -199,12 +256,43 @@
         modal.find('#phone').val("{!! old('phone') !!}")
         modal.find('#account_type').val("{!! old('account_type') !!}")
       }
-    })
-    });
+    }) //updateUserModal
 
+
+    $('#changPasswordModal').on('show.bs.modal', function(event) {
+      var button = $(event.relatedTarget)
+      
+      var modal = $(this)
+      
+      if (button.data('user_id')) {
+        $('.error').text("") //clear error if is set
+        modal.find('#user_id').val(button.data('user_id'))
+        modal.find('#email_old').val(button.data('email'))
+        //#email_old: does not do anything. Used to retain original text in case of error
+        modal.find('#current_email').text(button.data('email'))
+        modal.find('#fullname_text').text(button.data('fullname'))
+        modal.find('#fullname').val(button.data('fullname'))
+      }
+      //
+      else if ('{!! old('user_id') !!}' != '') {
+        modal.find('#user_id').val("{!! old('user_id') !!}")
+        modal.find('#email_old').val("{!! old('email_old') !!}")
+        //#email_old: does not do anything. Used to retain original text in case of error
+        modal.find('#current_email').text("{!! old('email_old') !!}")
+        modal.find('#fullname_text').text("{!! old('fullname') !!}")
+        modal.find('#fullname').val("{!! old('fullname') !!}")
+      }
+    }) //changPasswordModal
+
+    }); //documentReady
+    
     $(document).ready(function() {
-      @if (old('user_id'))
+      @if (old('user_id') && !old('password'))
         $('#updateUserModal').modal('show');
+      @endif
+      
+      @if (old('password'))
+        $('#changPasswordModal').modal('show');
       @endif
 
       $('#account_type').change(function() {

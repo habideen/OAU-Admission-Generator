@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('account_type', 15);
             $table->string('faculty_id', 1)->nullable();
             $table->string('account_disabled', 1)->nullable();
+            $table->string('force_logout', 1)->nullable();
             $table->timestamps();
 
             $table->primary('id');

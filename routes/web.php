@@ -34,6 +34,13 @@ Route::middleware(['throttle:custom_auth'])
         Route::post('/login', [LoginController::class, 'login'])->name('login');
     });
 
+Route::middleware(['auth', 'isSetToLogout'])
+    ->prefix('dean')
+    ->group(function () {
+        Route::get('dashboard', function(){
+            return 'Dean';
+        });
+    });
 
 
 Route::middleware(['auth'])
@@ -47,8 +54,8 @@ Route::middleware(['auth'])
                 Route::post('register', [UserManagementController::class, 'register']);
                 Route::get('list', [UserManagementController::class, 'listUsers']);
                 Route::post('edit', [UserManagementController::class, 'edit']);
-                Route::post('disable', [UserManagementController::class, 'disableOrEnable']);
-                Route::post('enable', [UserManagementController::class, 'disableOrEnable']);
+                Route::post('password', [UserManagementController::class, 'password']);
+                Route::get('disable_or_enable', [UserManagementController::class, 'disableOrEnable']);
                 Route::delete('delete', [UserManagementController::class, 'delete']);
             });
 

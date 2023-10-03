@@ -66,6 +66,9 @@ class LoginController extends Controller
                 'status' => 'failed',
                 'message' => 'This account is disabled. Please contact support.'
             ]);
+        } elseif (Auth::user()->force_logout) {
+            Auth::logoutOtherDevices($request->password);
+            User::where('email', $request->email)->update(['force_logout' => null]);
         }
 
 

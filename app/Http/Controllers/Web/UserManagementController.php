@@ -55,4 +55,22 @@ class UserManagementController extends Controller
 
         return apiResponse($api);
     } //edit
+
+
+    public function password(Request $request)
+    {
+        $api = (new V1UserManagementController)->password($request);
+        $api = json_decode($api->getContent());
+
+        return apiResponse($api);
+    } //password
+
+
+    public function disableOrEnable(Request $request)
+    {
+        $api = (new V1UserManagementController)->disableOrEnable($request);
+        $api = json_decode($api->getContent());
+
+        return apiResponse($api);
+    } //disableOrEnable
 }

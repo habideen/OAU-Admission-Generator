@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Events\LogoutUserFromAllDevices;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -54,7 +56,7 @@ class UserManagementController extends Controller
         } else {
             $save = new User;
             $save->id = Str::uuid()->toString();
-            $save->password = Hash::make($request->phone);
+            $save->password = Hash::make($request->password);
             $save->email_verified_at = now();
         }
 
@@ -106,32 +108,37 @@ class UserManagementController extends Controller
 
     public function disableOrEnable(Request $request)
     {
-        if (!isPassword($request->password)) {
+        if (Auth::user()->id == $request->user_id) {
             return response([
                 'status' => 'failed',
-                'message' => 'Invalid password. Please try again.'
-            ], Response::HTTP_UNAUTHORIZED);
+                'message' => 'You cannot disable yourself'
+            ], Response::HTTP_EXPECTATION_FAILED);
+        } elseif (User::where('id', $request->user_id)->where('account_type', 'Super Admin')->first()) {
+            return response([
+                'status' => 'failed',
+                'message' => 'You cannot disable the super admin'
+            ], Response::HTTP_EXPECTATION_FAILED);
         }
 
-        if (!User::where('id', $request->id)->first()) {
+        if (!User::where('id', $request->user_id)->first()) {
             return response([
                 'status' => 'success',
                 'message' => 'User does not exist.'
             ], Response::HTTP_EXPECTATION_FAILED);
         }
 
-        if ($request->disable) {
-            if (User::where('id', $request->id)->update(['account_disabled' => 1])) {
+        if ($request->new_status == 'disable') {
+            if (User::where('id', $request->user_id)->update(['account_disabled' => 1])) {
                 return response([
                     'status' => 'success',
-                    'message' => 'User disabled successfully.'
+                    'message' => $request->fullname . '\'s account was disabled successfully.'
                 ], Response::HTTP_OK);
             }
-        } elseif ($request->enable) {
-            if (User::where('id', $request->id)->update(['account_disabled' => null])) {
+        } elseif ($request->new_status == 'enable') {
+            if (User::where('id', $request->user_id)->update(['account_disabled' => null])) {
                 return response([
                     'status' => 'success',
-                    'message' => 'User enabled successfully.'
+                    'message' => $request->fullname . '\'s account was enabled successfully.'
                 ], Response::HTTP_OK);
             }
         }
@@ -141,4 +148,53 @@ class UserManagementController extends Controller
             'message' => 'We could not precess your request. Please try again.'
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
     } // disableOrEnable
+
+
+
+    public function password(Request $request)
+    {
+        if (Auth::user()->id == $request->user_id) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Please use the password link to change your password'
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'exists:users,id'],
+            'password' => ['required', 'string', 'min:8']
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Invalid input submitted',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+        /**
+         * logout user from all devices using isSetToLogout middleware
+         * Individual user users are logged out when 'force_logout' = 1
+         * All other loggin users are logged out when someone logged in successfully
+         */
+        $save = User::where('id', $request->user_id)
+            ->update([
+                'password' => Hash::make($request->password),
+                'force_logout' => 1
+            ]);
+
+        if (!$save) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Server error!'
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
+
+        return response([
+            'status' => 'success',
+            'message' => $request->fullname . '\'s password is updated successfully'
+        ], Response::HTTP_CREATED);
+    } //password
 }
