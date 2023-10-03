@@ -114,6 +114,17 @@
           </ul>
         </li>
 
+        <li>
+          <a href="javascript: void(0);" class="has-arrow waves-effect">
+            <i class="bx bxs-user-detail"></i>
+            <span key="t-users">Users</span>
+          </a>
+          <ul class="sub-menu" aria-expanded="false">
+            <li><a href="/{{ $accountType }}/user/register" key="t-user_add">Add User</a></li>
+            <li><a href="/{{ $accountType }}/user/list" key="t-user_all">View All Users</a></li>
+          </ul>
+        </li>
+
         <li class="menu-title" key="t-pages">Settings</li>
 
         <li>

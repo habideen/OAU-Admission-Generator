@@ -8,6 +8,7 @@ use App\Http\Controllers\Web\CourseController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ELDSController;
 use App\Http\Controllers\Web\FacultyController;
+use App\Http\Controllers\Web\RegisterController;
 use App\Http\Controllers\Web\SessionController;
 use App\Http\Controllers\Web\SubjectController;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,7 @@ Route::middleware(['auth'])
         //user
         Route::prefix('user')
             ->group(function () {
+                Route::get('register', [RegisterController::class, 'registerView']);
                 Route::post('register', [RegisterController::class, 'register']);
                 Route::post('disable', [UserManagementController::class, 'disableOrEnable']);
                 Route::post('enable', [UserManagementController::class, 'disableOrEnable']);
