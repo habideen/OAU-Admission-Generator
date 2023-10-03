@@ -6,9 +6,7 @@ use App\Models\Candidate;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-// use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-// class CandidatesImport extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements WithMultipleSheets, ToModel, WithHeadingRow
 class CandidatesImport extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements ToModel, WithHeadingRow
 {
     /**

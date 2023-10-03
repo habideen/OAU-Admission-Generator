@@ -1,6 +1,6 @@
 @extends('layouts.panel')
 
-@section('page_title', 'Candidate Upload')
+@section('page_title', 'Discretion Upload')
 
 
 @section('content')
@@ -11,12 +11,12 @@
       <div class="row">
         <div class="col-12">
           <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0 font-size-18">Candidate Upload</h4>
+            <h4 class="mb-sm-0 font-size-18">Discretion Upload</h4>
 
             <div class="page-title-right">
               <ol class="breadcrumb m-0">
                 <li class="breadcrumb-item"><a href="/{{ account_type() }}/dashboard">Dashboard</a></li>
-                <li class="breadcrumb-item active">Candidate Upload</li>
+                <li class="breadcrumb-item active">Discretion Upload</li>
               </ol>
             </div>
           </div>
@@ -38,58 +38,6 @@
             <x-form.button defaultText="Upload Candidates" id="uploadBtn" />
 
           </form>
-        </div>
-      </div>
-      <!-- card -->
-
-      <div class="card">
-        <div class="card-body">
-          <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
-            <thead>
-              <tr>
-                <th>SN</th>
-                <th>Reg. No.</th>
-                <th>Fullname</th>
-                <th>Gender</th>
-                <th>State</th>
-                <th>Subjects</th>
-                <th>Course</th>
-                <th>UTME Score</th>
-                <th>O'level Score</th>
-                <th>PUTME Score</th>
-                <th>PUTME Screening</th>
-                <th>Aggregate</th>
-                <th>Session Uploaded</th>
-                <th>Is Admitted</th>
-                <th>Created At</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              @php $c = 0; @endphp
-              @foreach ($candidates as $candidate)
-                <tr>
-                  <td>{{ ++$c }}</td>
-                  <td>{{ $candidate->rg_num }}</td>
-                  <td>{{ $candidate->fullname }}</td>
-                  <td>{{ $candidate->rg_sex }}</td>
-                  <td>{{ $candidate->state_name }}</td>
-                  <td>{{ $candidate->subject_code_1 }}, {{ $candidate->subject_code_2 }},
-                    {{ $candidate->subject_code_3 }}
-                  </td>
-                  <td>{{ $candidate->course }}</td>
-                  <td>{{ $candidate->utme_score }}</td>
-                  <td>{{ $candidate->olevel_score }}</td>
-                  <td>{{ $candidate->putme_score }}</td>
-                  <td>{{ $candidate->putme_screening }}</td>
-                  <td>{{ $candidate->aggregate }}</td>
-                  <td>{{ $candidate->session_updated }}</td>
-                  <td>{{ $candidate->isAdmitted }}</td>
-                  <td>{{ date('d M, Y', strtotime($candidate->created_at)) }}</td>
-                </tr>
-              @endforeach
-            </tbody>
-          </table>
         </div>
       </div>
       <!-- card -->

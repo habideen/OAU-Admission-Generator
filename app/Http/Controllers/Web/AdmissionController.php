@@ -86,4 +86,21 @@ class AdmissionController extends Controller
             'totalCandidates' => $totalCandidates->num,
         ]);
     } //admissionStat
+
+
+
+    public function discretionUploadView()
+    {
+        return view('admission_discretion_upload');
+    } //discretionUploadView
+
+
+
+    public function discretionUpload(Request $request)
+    {
+        $api = (new V1AdmissionController)->discretionUpload($request);
+        $api = json_decode($api->getContent());
+
+        return apiResponse($api);
+    } //discretionUpload
 }

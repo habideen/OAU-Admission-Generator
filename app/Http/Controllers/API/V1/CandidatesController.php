@@ -9,6 +9,7 @@ use App\Rules\SessionValidation;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -43,8 +44,13 @@ class CandidatesController extends Controller
 
   public function list(Request $request)
   {
-    $candidates = Candidate::orderBy('course', 'ASC')
+    $candidates = Candidate::select(
+      'candidates.*',
+      DB::raw('IF(admission_lists.rg_num IS NOT NULL, "Admitted", "No") AS isAdmitted')
+    )
+    ->orderBy('course', 'ASC')
       ->orderBy('fullname', 'ASC')
+      ->leftJoin('admission_lists', 'admission_lists.rg_num', '=', 'candidates.rg_num')
       ->where('session_updated', $request->session ?? activeSession())
       ->get();
 

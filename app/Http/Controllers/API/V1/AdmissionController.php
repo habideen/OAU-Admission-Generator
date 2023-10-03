@@ -4,19 +4,21 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Exports\GetAdmissionList;
 use App\Http\Controllers\Controller;
+use App\Imports\DiscretionImport;
 use App\Models\AdmissionCriteria;
 use App\Models\AdmissionList;
 use App\Models\Candidate;
 use App\Models\Catchment;
 use App\Models\Course;
 use App\Models\elds;
-use App\Rules\AccountTypeValidation;
 use App\Rules\SessionValidation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 use function PHPSTORM_META\type;
 
@@ -372,4 +374,39 @@ class AdmissionController extends Controller
             'num' => $num
         ]);
     } //totalCandidates
+
+
+
+
+    public function discretionUpload(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'candidates_file' => ['required', 'mimes:xls,xlsx']
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Invalid input submitted',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+        Excel::import(new DiscretionImport(), $request->candidates_file);
+
+        $report = Session::has('report_failed') ? Session::get('report_failed') : '';
+        $count = Session::get('success_count')
+            . ' of '
+            . (Session::get('success_count') + Session::get('failed_count'))
+            . ' uploaded.';
+
+        $report = $report ?
+            $report . '<br><br>' . $count
+            : $count;
+
+        return response([
+            'status' => 'success',
+            'message' => $report
+        ], Response::HTTP_CREATED);
+    } //discretionUpload
 }

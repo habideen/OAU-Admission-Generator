@@ -102,8 +102,12 @@
               <ul class="sub-menu" aria-expanded="true">
                 <li><a href="/{{ $accountType }}/admission/criteria/update" key="t-admission_criteria">Criteria
                     Settings</a></li>
-                <li><a href="/{{ $accountType }}/admission/generate" key="t-admission_generate">Generate Admission</a></li>
+                <li><a href="/{{ $accountType }}/admission/generate" key="t-admission_generate">Generate Admission</a>
+                </li>
                 <li><a href="/{{ $accountType }}/admission/statistics" key="t-admission_stat">Admission Statistics</a>
+                </li>
+                <li><a href="/{{ $accountType }}/admission/discretion/upload" key="t-admission_stat">Upload
+                    Discretion</a>
                 </li>
               </ul>
             </li>

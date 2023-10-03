@@ -117,7 +117,7 @@ Route::middleware(['auth'])
                 Route::delete('delete', [CandidatesController::class, 'delete']);
             });
 
-        //admission
+        //admission ++++++++++++++++++++++++++++++++++++
         Route::prefix('admission')
             ->group(function () {
                 Route::get('criteria/update', [AdmissionController::class, 'admissionCriteriaView']);
@@ -125,7 +125,7 @@ Route::middleware(['auth'])
                 Route::get('generate', [AdmissionController::class, 'generateAdmissionView']);
                 Route::get('calculate', [AdmissionController::class, 'generateAdmission']);
                 Route::get('statistics', [AdmissionController::class, 'admissionStat']);
-                // Route::get('download', [AdmissionController::class, 'downloadAdmission']);
-                Route::get('add_by_discretion', [AdmissionController::class, 'addByAdmission']);
+                Route::get('discretion/upload', [AdmissionController::class, 'discretionUploadView']);
+                Route::post('discretion/upload', [AdmissionController::class, 'discretionUpload']);
             });
     });
