@@ -45,10 +45,10 @@ Route::middleware(['auth'])
             ->group(function () {
                 Route::get('register', [RegisterController::class, 'registerView']);
                 Route::post('register', [RegisterController::class, 'register']);
+                Route::get('list', [RegisterController::class, 'listUsers']);
                 Route::post('disable', [UserManagementController::class, 'disableOrEnable']);
                 Route::post('enable', [UserManagementController::class, 'disableOrEnable']);
                 Route::delete('delete', [UserManagementController::class, 'delete']);
-                Route::get('list', [UserManagementController::class, 'listUsers']);
             });
 
         //course ++++++++++++++++++++++++++++++++++++

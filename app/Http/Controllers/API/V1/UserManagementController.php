@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
-class RegisterController extends Controller
+class UserManagementController extends Controller
 {
     public function register(Request $request)
     {
@@ -75,4 +76,64 @@ class RegisterController extends Controller
             'message' => 'User added successfully'
         ], Response::HTTP_CREATED);
     } //register
+
+
+    public function listUsers(Request $request)
+    {
+        $users = User::select(
+            'users.*',
+            DB::raw('IF(users.account_disabled IS NOT NULL, "Disabled", NULL) AS isDisabled'),
+            'faculties.faculty'
+        )
+            ->leftJoin('faculties', 'faculties.id', '=', 'users.faculty_id');
+
+        if ($request->account_status == 'disabled') {
+            $users = $users->where('users.account_disabled', 1);
+        }
+
+        return response([
+            'status' => 'success',
+            'message' => 'Retrieved successfully',
+            'users' => $users->get()
+        ]);
+    } //listUsers
+
+
+    public function disableOrEnable(Request $request)
+    {
+        if (!isPassword($request->password)) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Invalid password. Please try again.'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if (!User::where('id', $request->id)->first()) {
+            return response([
+                'status' => 'success',
+                'message' => 'User does not exist.'
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+        if ($request->disable) {
+            if (User::where('id', $request->id)->update(['account_disabled' => 1])) {
+                return response([
+                    'status' => 'success',
+                    'message' => 'User disabled successfully.'
+                ], Response::HTTP_OK);
+            }
+        } elseif ($request->enable) {
+            if (User::where('id', $request->id)->update(['account_disabled' => null])) {
+                return response([
+                    'status' => 'success',
+                    'message' => 'User enabled successfully.'
+                ], Response::HTTP_OK);
+            }
+        }
+
+        return response([
+            'status' => 'failed',
+            'message' => 'We could not precess your request. Please try again.'
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    } // disableOrEnable
 }
