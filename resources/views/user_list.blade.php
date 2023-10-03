@@ -65,10 +65,16 @@
                         ' ' .
                         strtoupper($user->last_name)" />
                     <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
-                      data-bs-target="#updateUserModal" data-id="{{ $user->id }}" data-email="{{ $user->email }}"
-                      data-title="{{ $user->title }}" data-first_name="{{ $user->first_name }}"
-                      data-middle_name="{{ $user->middle_name }}" data-last_name="{{ $user->last_name }}"
-                      data-phone_1="{{ $user->phone_1 }}"><i class="bx bxs-edit"></i></button>
+                      data-bs-target="#updateUserModal" 
+                      data-user_id="{{ $user->id }}" 
+                      data-email="{{ $user->email }}"                      
+                      data-title="{{ $user->title }}" 
+                      data-first_name="{{ $user->first_name }}"                      
+                      data-middle_name="{{ $user->middle_name }}" 
+                      data-last_name="{{ $user->last_name }}"
+                      data-phone="{{ $user->phone_1 }}"
+                      data-account_type="{{ $user->account_type }}"
+                      data-faculty_id="{{ $user->faculty_id }}"><i class="bx bxs-edit"></i></button>
                   </td>
                 </tr>
               @endforeach
@@ -81,6 +87,40 @@
     <!-- container-fluid -->
   </div>
   <!-- End Page-content -->
+
+  <div class="modal fade" id="updateUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="updateUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateUserModalLabel">Update User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <form method="post" action="/{{ account_type() }}/user/edit">
+            @csrf
+
+            <div class="error"><x-alert /></div>
+
+            <input type="hidden" name="user_id" id="user_id">
+            <input type="hidden" name="email_old" id="email_old">
+            <div class="mb-3 h3">Current Email: <span class="d-inline-block" id="current_text"></span></div>
+
+            @include('components.user_form')
+
+            <div class="d-flex mt-5">
+              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+              <div class="ms-auto">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Static Backdrop Modal -->
 @endsection
 
 
@@ -122,6 +162,50 @@
           event.preventDefault();
         }
       }
+      
+
+      $('#updateUserModal').on('show.bs.modal', function(event) {
+      var button = $(event.relatedTarget)
+
+      var modal = $(this)
+
+      if (button.data('user_id')) {
+        $('.error').text("") //clear error if is set
+        modal.find('#user_id').val(button.data('user_id'))
+        modal.find('#email_old').val(button.data('email'))
+        //#email_old: does not do anything. Used to retain original text in case of error
+        modal.find('#current_text').text(button.data('email'))
+        modal.find('#title').val(button.data('title'))
+        modal.find('#last_name').val(button.data('last_name'))
+        modal.find('#first_name').val(button.data('first_name'))
+        modal.find('#middle_name').val(button.data('middle_name'))
+        modal.find('#faculty_id').val(button.data('faculty_id'))
+        modal.find('#email').val(button.data('email'))
+        modal.find('#phone').val(button.data('phone'))
+        modal.find('#account_type').val(button.data('account_type'))
+      }
+      //
+      else if ('{!! old('user_id') !!}' != '') {
+        modal.find('#user_id').val("{!! old('user_id') !!}")
+        modal.find('#email_old').val("{!! old('email_old') !!}")
+        //#email_old: does not do anything. Used to retain original text in case of error
+        modal.find('#current_text').text("{!! old('email_old') !!}")
+        modal.find('#title').val("{!! old('title') !!}")
+        modal.find('#last_name').val("{!! old('last_name') !!}")
+        modal.find('#first_name').val("{!! old('first_name') !!}")
+        modal.find('#middle_name').val("{!! old('middle_name') !!}")
+        modal.find('#faculty_id').val("{!! old('faculty_id') !!}")
+        modal.find('#email').val("{!! old('email') !!}")
+        modal.find('#phone').val("{!! old('phone') !!}")
+        modal.find('#account_type').val("{!! old('account_type') !!}")
+      }
+    })
+    });
+
+    $(document).ready(function() {
+      @if (old('user_id'))
+        $('#updateUserModal').modal('show');
+      @endif
     });
   </script>
 @endsection

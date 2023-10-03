@@ -8,9 +8,9 @@ use App\Http\Controllers\Web\CourseController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ELDSController;
 use App\Http\Controllers\Web\FacultyController;
-use App\Http\Controllers\Web\RegisterController;
 use App\Http\Controllers\Web\SessionController;
 use App\Http\Controllers\Web\SubjectController;
+use App\Http\Controllers\Web\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,9 +43,10 @@ Route::middleware(['auth'])
         //user
         Route::prefix('user')
             ->group(function () {
-                Route::get('register', [RegisterController::class, 'registerView']);
-                Route::post('register', [RegisterController::class, 'register']);
-                Route::get('list', [RegisterController::class, 'listUsers']);
+                Route::get('register', [UserManagementController::class, 'registerView']);
+                Route::post('register', [UserManagementController::class, 'register']);
+                Route::get('list', [UserManagementController::class, 'listUsers']);
+                Route::post('edit', [UserManagementController::class, 'edit']);
                 Route::post('disable', [UserManagementController::class, 'disableOrEnable']);
                 Route::post('enable', [UserManagementController::class, 'disableOrEnable']);
                 Route::delete('delete', [UserManagementController::class, 'delete']);

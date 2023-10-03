@@ -14,9 +14,10 @@ use Illuminate\Support\Str;
 
 class UserManagementController extends Controller
 {
-    public function register(Request $request)
+    public function registerOrEdit(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'user_id' => ['nullable', 'exists:users,id'],
             'title' => ['required', Rule::in(USER_TITLE)],
             'last_name' => [
                 'required', 'min:2', 'regex:/^[a-zA-Z\-]{2,70}$/'
@@ -31,11 +32,13 @@ class UserManagementController extends Controller
                 'nullable', 'email', 'max:255',
                 Rule::unique('users')->ignore($request->user_id, 'id'),
             ],
+            'faculty_id' => ['nullable', 'exists:faculties,id'],
             'phone' => [
                 'required', 'regex:/^[0][7-8][0-9]{9,9}$/',
                 Rule::unique('users', 'phone_1')->ignore($request->user_id, 'id'),
             ],
             'account_type' => ['required', Rule::in(USER_TYPE)],
+            'password' => ['nullable', 'string', 'min:8', Rule::requiredIf(!$request->user_id)]
         ]);
 
         if ($validator->fails()) {
@@ -62,6 +65,7 @@ class UserManagementController extends Controller
         $save->account_type = ucwords($request->account_type);
         $save->email = strtolower($request->email);
         $save->phone_1 = $request->phone;
+        $save->faculty_id = $request->faculty_id;
         $save->save();
 
         if (!$save) {
@@ -75,7 +79,7 @@ class UserManagementController extends Controller
             'status' => 'success',
             'message' => 'User added successfully'
         ], Response::HTTP_CREATED);
-    } //register
+    } //registerOrEdit
 
 
     public function listUsers(Request $request)
@@ -83,7 +87,8 @@ class UserManagementController extends Controller
         $users = User::select(
             'users.*',
             DB::raw('IF(users.account_disabled IS NOT NULL, "Disabled", NULL) AS isDisabled'),
-            'faculties.faculty'
+            'faculties.faculty',
+            'faculties.id AS faculty_id'
         )
             ->leftJoin('faculties', 'faculties.id', '=', 'users.faculty_id');
 
