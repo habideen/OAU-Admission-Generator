@@ -28,16 +28,35 @@
         <div class="card-body">
           <x-alert />
 
-          <form method="post" enctype="multipart/form-data" id="uploadForm">
-            @csrf
+          <div class="row justify-content-between">
+            @if (Auth::user()->account_type == 'Dean')
+              <div class="col-md-5 mb-4">
+                <form method="post" enctype="multipart/form-data" id="uploadForm">
+                  @csrf
 
-            <x-form.input name="candidates_file" label="Candidates File" type="file"
-              parentClass="mb-4 col-md-5 col-sm-6" accept=".xls,.xlsx" required
-              bottomInfo="Only excel file (xls, xlxs) is accepted.<br/>All the sheets in the file will be traversed." />
+                  <x-form.input name="candidates_file" label="Candidates File" type="file" accept=".xls,.xlsx" required
+                    bottomInfo="Only excel file (xls, xlxs) is accepted.<br/>All the sheets in the file will be traversed."
+                    parentClass="mb-4" />
 
-            <x-form.button defaultText="Upload Candidates" id="uploadBtn" />
+                  <x-form.button defaultText="Upload Candidates" id="uploadBtn" />
 
-          </form>
+                </form>
+              </div>
+            @endif
+
+            <div class="col-md-5">
+              <form>
+
+                <x-form.select name="session" label="Session" :selected="Request::get('session') ?? activeSession()" optionsType="object" :options="$sessions"
+                  objKey="session" objValue="session" required parentClass="mb-4" />
+
+                @csrf
+
+                <x-form.button defaultText="Search" />
+
+              </form>
+            </div>
+          </div>
         </div>
       </div>
       <!-- card -->
@@ -84,7 +103,7 @@
                   <td>{{ $candidate->putme_screening }}</td>
                   <td>{{ $candidate->aggregate }}</td>
                   <td>{{ $candidate->session_updated }}</td>
-                  <td>{{ $candidate->isAdmitted }}</td>
+                  <td>{!! $candidate->isAdmitted !!}</td>
                   <td>{{ date('d M, Y', strtotime($candidate->created_at)) }}</td>
                 </tr>
               @endforeach

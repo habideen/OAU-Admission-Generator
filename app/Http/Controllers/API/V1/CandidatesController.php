@@ -5,10 +5,12 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Imports\CandidatesImport;
 use App\Models\Candidate;
+use App\Models\Course;
 use App\Rules\SessionValidation;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -46,18 +48,28 @@ class CandidatesController extends Controller
   {
     $candidates = Candidate::select(
       'candidates.*',
-      DB::raw('IF(admission_lists.rg_num IS NOT NULL, "Admitted", "No") AS isAdmitted')
+      DB::raw('IF(admission_lists.rg_num IS NOT NULL, 
+        "<span class=\'text-success\'>Admitted</span>", 
+        "<span class=\'text-danger\'>No</span>") AS isAdmitted')
     )
-    ->orderBy('course', 'ASC')
+      ->orderBy('course', 'ASC')
       ->orderBy('fullname', 'ASC')
       ->leftJoin('admission_lists', 'admission_lists.rg_num', '=', 'candidates.rg_num')
-      ->where('session_updated', $request->session ?? activeSession())
-      ->get();
+      ->where('session_updated', $request->session ?? activeSession());
+
+    if (!in_array(Auth::user()->account_type, ['Admin', 'Super Admin'])) {
+      // select only the departments in that faculty when user is Dean
+      $courses = Course::select('course')
+        ->where('faculty_id', Auth::user()->faculty_id)->get();
+      $courses = count($courses) > 0 ? $courses->pluck('course') : [];
+
+      $candidates = $candidates->whereIn('candidates.course', $courses);
+    }
 
     return response([
       'status' => 'success',
       'message' => 'Retrieved successfully',
-      'candidates' => $candidates
+      'candidates' => $candidates->get()
     ]);
   } //list
 

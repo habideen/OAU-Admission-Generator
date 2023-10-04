@@ -11,11 +11,17 @@ class CandidatesController extends Controller
 {
     public function uploadView(Request $request)
     {
-        $api = (new V1CandidatesController)->list($request);
-        $api = json_decode($api->getContent());
+        $request->merge(['fetch_all' => 'true']);
+
+        $candidates = (new V1CandidatesController)->list($request);
+        $candidates = json_decode($candidates->getContent());
+
+        $sessions = (new SessionController)->getAll($request);
+        $sessions = json_decode($sessions->getContent());
 
         return view('candidate_upload')->with([
-            'candidates' => $api->candidates
+            'sessions' => $sessions->sessions,
+            'candidates' => $candidates->candidates
         ]);
     } //uploadView
 

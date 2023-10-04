@@ -134,6 +134,12 @@
 
         @if (Auth::user()->account_type == 'Dean')
           <li>
+            <a href="/{{ $accountType }}/candidates" class="waves-effect">
+              <i class="bx bx-user"></i>
+              <span key="t-candidates">Candidates</span>
+            </a>
+          </li>
+          <li>
             <a href="/{{ $accountType }}/admission/view" class="waves-effect">
               <i class="bx bx-edit"></i>
               <span key="t-admission_generate">View Admission</span>

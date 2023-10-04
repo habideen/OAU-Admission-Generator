@@ -53,6 +53,8 @@ Route::middleware(['auth'])
     ->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index']);
 
+        Route::get('candidates', [CandidatesController::class, 'uploadView']);
+
         Route::prefix('admission')
             ->group(function () {
                 Route::get('view', [AdmissionController::class, 'generateAdmissionView']);
