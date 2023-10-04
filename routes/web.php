@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Web\AdmissionController;
 use App\Http\Controllers\Web\Auth\LoginController;
+use App\Http\Controllers\Web\Auth\LogoutController;
+use App\Http\Controllers\Web\Auth\PasswordController;
 use App\Http\Controllers\Web\CandidatesController;
 use App\Http\Controllers\Web\CatchmentController;
 use App\Http\Controllers\Web\CourseController;
@@ -37,10 +39,13 @@ Route::middleware(['throttle:custom_auth'])
 Route::middleware(['auth', 'isSetToLogout'])
     ->prefix('dean')
     ->group(function () {
-        Route::get('dashboard', function(){
+        Route::get('dashboard', function () {
             return 'Dean';
         });
     });
+
+
+Route::get('/logout', [LogoutController::class, 'logout'])->middleware(['auth']);
 
 
 Route::middleware(['auth'])
@@ -56,10 +61,9 @@ Route::middleware(['auth'])
                 Route::post('edit', [UserManagementController::class, 'edit']);
                 Route::post('password', [UserManagementController::class, 'password']);
                 Route::get('disable_or_enable', [UserManagementController::class, 'disableOrEnable']);
-                Route::delete('delete', [UserManagementController::class, 'delete']);
+                // Route::delete('delete', [UserManagementController::class, 'delete']);
             });
 
-        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('subject')
             ->group(function () {
                 Route::get('add', [SubjectController::class, 'addView']);
@@ -69,7 +73,6 @@ Route::middleware(['auth'])
                 Route::delete('delete', [SubjectController::class, 'delete']);
             });
 
-        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('session')
             ->group(function () {
                 Route::get('set', [SessionController::class, 'setView']);
@@ -77,7 +80,6 @@ Route::middleware(['auth'])
                 Route::get('get/all', [SessionController::class, 'getAll']);
             });
 
-        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('faculty')
             ->group(function () {
                 Route::get('add', [FacultyController::class, 'addView']);
@@ -87,7 +89,6 @@ Route::middleware(['auth'])
                 Route::delete('delete', [FacultyController::class, 'delete']);
             });
 
-        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('course')
             ->group(function () {
                 Route::get('add', [CourseController::class, 'addView']);
@@ -97,7 +98,6 @@ Route::middleware(['auth'])
                 Route::delete('delete', [CourseController::class, 'delete']);
             });
 
-        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('catchment')
             ->group(function () {
                 Route::get('add', [CatchmentController::class, 'addView']);
@@ -107,7 +107,6 @@ Route::middleware(['auth'])
                 Route::delete('delete', [CatchmentController::class, 'delete']);
             });
 
-        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('elds')
             ->group(function () {
                 Route::get('add', [ELDSController::class, 'addView']);
@@ -118,7 +117,6 @@ Route::middleware(['auth'])
             });
 
 
-        //course ++++++++++++++++++++++++++++++++++++
         Route::prefix('candidate')
             ->group(function () {
                 Route::get('upload', [CandidatesController::class, 'uploadView']);
@@ -127,7 +125,6 @@ Route::middleware(['auth'])
                 Route::delete('delete', [CandidatesController::class, 'delete']);
             });
 
-        //admission ++++++++++++++++++++++++++++++++++++
         Route::prefix('admission')
             ->group(function () {
                 Route::get('criteria/update', [AdmissionController::class, 'admissionCriteriaView']);
@@ -138,4 +135,7 @@ Route::middleware(['auth'])
                 Route::get('discretion/upload', [AdmissionController::class, 'discretionUploadView']);
                 Route::post('discretion/upload', [AdmissionController::class, 'discretionUpload']);
             });
+
+        Route::get('password', [PasswordController::class, 'index']);
+        Route::post('password', [PasswordController::class, 'updatePassword']);
     });

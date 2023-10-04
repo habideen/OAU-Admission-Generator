@@ -127,12 +127,12 @@
 
         <li class="menu-title" key="t-pages">Settings</li>
 
-        <li>
+        {{-- <li>
           <a href="/{{ $accountType }}/my_profile" class="waves-effect">
             <i class="bx bx-user"></i>
             <span key="t-dashboards">My Profile</span>
           </a>
-        </li>
+        </li> --}}
 
         <li>
           <a href="/{{ $accountType }}/password" class="waves-effect">

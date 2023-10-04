@@ -13,25 +13,31 @@ class PasswordController extends Controller
 {
     public function index()
     {
-        return view('panel.password');
+        return view('user_password');
     } //index
 
 
 
     public function updatePassword(Request $request)
     {
+        Session::flash('status', 'failed');
+        Session::flash('message', 'Invalid input submitted');
+
         $request->validate([
             'current_password' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
+
         if (!(Hash::check($request->get('current_password'), Auth::user()->password))) {
             return redirect()->back()->with([
-                'fail' => 'Your Current password does not matches with the password you provided. Please try again.'
+                'status' => 'failed',
+                'message' => 'Your Current password does not matches with the password you provided. Please try again.'
             ]);
         } else {
             $user = User::where('id', Auth::user()->id)
                 ->update(['password' => Hash::make($request->get('password'))]);
+
             if ($user) {
                 Auth::user()->password = Hash::make($request->get('password'));
 
@@ -39,11 +45,13 @@ class PasswordController extends Controller
                 Auth::logoutOtherDevices($request->password);
 
                 return redirect()->back()->with([
-                    'success' => 'Password updated successfully!'
+                    'status' => 'success',
+                    'message' => 'Password updated successfully!'
                 ]);
             } else {
                 return redirect()->back()->with([
-                    'fail' => SERVER_ERROR
+                    'status' => 'failed',
+                    'message' => SERVER_ERROR
                 ]);
             }
         }

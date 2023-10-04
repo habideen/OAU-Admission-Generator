@@ -21,16 +21,4 @@ class LogoutController extends Controller
 
         return redirect('/')->withCookie($cookie);
     }
-
-
-    public function logoutAllWeb(Request $request)
-    {
-        // Auth::guard('web')->logoutOtherDevices($request->password);
-
-        // Auth::session()->invalidate();
-
-        // Auth::session()->regenerateToken();
-
-        // Auth::session()->flush();
-    } //logoutAllWeb
 }

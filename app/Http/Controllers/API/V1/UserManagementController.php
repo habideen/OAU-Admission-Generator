@@ -77,6 +77,10 @@ class UserManagementController extends Controller
             ], Response::HTTP_SERVICE_UNAVAILABLE);
         }
 
+        if ($request->user_id && Auth::user()->id == $request->user_id) {
+            Auth::setUser(User::find($request->user_id));
+        }
+
         return response([
             'status' => 'success',
             'message' => 'User added successfully'

@@ -56,26 +56,27 @@
                   <td>{{ $user->isDisabled }}</td>
                   <td>{{ date('d M, Y', strtotime($user->created_at)) }}</td>
                   <td>{{ date('d M, Y', strtotime($user->updated_at)) }}</td>
-                  <td>
+                  <td>                    
+                    <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
+                      data-bs-target="#updateUserModal" 
+                      data-user_id="{{ $user->id }}" 
+                      data-email="{{ $user->email }}"                      
+                      data-title="{{ $user->title }}" 
+                      data-first_name="{{ $user->first_name }}"                      
+                      data-middle_name="{{ $user->middle_name }}" 
+                      data-last_name="{{ $user->last_name }}"
+                      data-phone="{{ $user->phone_1 }}"
+                      data-account_type="{{ $user->account_type }}"
+                      data-faculty_id="{{ $user->faculty_id }}"><i class="bx bxs-edit"></i></button>
+
                     @if (Auth::user()->id != $user->id)
-                      <x-form.delete action="/user/delete" name="id" :value="$user->id" :text="$user->title .
+                      {{-- <x-form.delete action="/user/delete" name="id" :value="$user->id" :text="$user->title .
                           ' ' .
                           $user->first_name .
                           ' ' .
                           $user->middle_name .
                           ' ' .
-                          strtoupper($user->last_name)" />
-                      <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
-                        data-bs-target="#updateUserModal" 
-                        data-user_id="{{ $user->id }}" 
-                        data-email="{{ $user->email }}"                      
-                        data-title="{{ $user->title }}" 
-                        data-first_name="{{ $user->first_name }}"                      
-                        data-middle_name="{{ $user->middle_name }}" 
-                        data-last_name="{{ $user->last_name }}"
-                        data-phone="{{ $user->phone_1 }}"
-                        data-account_type="{{ $user->account_type }}"
-                        data-faculty_id="{{ $user->faculty_id }}"><i class="bx bxs-edit"></i></button>
+                          strtoupper($user->last_name)" /> --}}
                         
                       <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
                         data-bs-target="#changPasswordModal" 
