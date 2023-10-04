@@ -31,11 +31,34 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LoginController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
 
-
 Route::middleware(['throttle:custom_auth'])
     ->group(function () {
         Route::post('/login', [LoginController::class, 'login'])->name('login');
     });
 
+Route::middleware(['auth', 'isSetToLogout'])
+    ->prefix('dean')
+    ->group(function () {
+        Route::get('dashboard', function () {
+            return 'Dean';
+        });
+    });
+
 
 Route::get('/logout', [LogoutController::class, 'logout'])->middleware(['auth']);
+
+
+Route::middleware(['auth'])
+    ->prefix('dean')
+    ->group(function () {
+        Route::get('dashboard', [DashboardController::class, 'index']);
+
+        Route::prefix('admission')
+            ->group(function () {
+                Route::get('view', [AdmissionController::class, 'generateAdmissionView']);
+                Route::get('statistics', [AdmissionController::class, 'admissionStat']);
+            });
+
+        Route::get('password', [PasswordController::class, 'index']);
+        Route::post('password', [PasswordController::class, 'updatePassword']);
+    });

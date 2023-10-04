@@ -45,9 +45,11 @@
                 {{-- @csrf --}}
 
                 <div class="row">
-                  <x-form.select name="faculty" label="Faculty" :selected="old('faculty')" optionsType="object" :options="$faculties"
-                    objKey="id" objValue="faculty" parentClass="mb-4 col-lg-3 col-md-4 col-sm-6" firstOption="All"
-                    firstOptionValue="-" />
+                  @if (Auth::user()->account_type == 'Super Admin' || Auth::user()->account_type == 'Admin')
+                    <x-form.select name="faculty" label="Faculty" :selected="old('faculty')" optionsType="object" :options="$faculties"
+                      objKey="id" objValue="faculty" parentClass="mb-4 col-lg-3 col-md-4 col-sm-6" firstOption="All"
+                      firstOptionValue="-" />
+                  @endif
 
                   <x-form.select name="course" label="Course" :selected="old('course')" optionsType="object" :options="$courses"
                     objKey="course" objValue="course" parentClass="mb-4 col-lg-3 col-md-4 col-sm-6" firstOption="All"
