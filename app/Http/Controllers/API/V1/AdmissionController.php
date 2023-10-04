@@ -395,7 +395,7 @@ class AdmissionController extends Controller
         Excel::import(new DiscretionImport(), $request->candidates_file);
 
         $report = Session::has('report_failed') ? Session::get('report_failed') : '';
-        $count = Session::get('success_count')
+        $count = (int) Session::get('success_count') //convert '' to 0
             . ' of '
             . (Session::get('success_count') + Session::get('failed_count'))
             . ' uploaded.';

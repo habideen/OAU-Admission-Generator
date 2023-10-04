@@ -58,6 +58,7 @@
             </a>
             <ul class="sub-menu" aria-expanded="false">
               <li><a href="/{{ $accountType }}/course/add" key="t-course_add">Add Course</a></li>
+              <li><a href="/{{ $accountType }}/course/upload" key="t-course_upload">Upload Course</a></li>
               <li><a href="/{{ $accountType }}/course/list" key="t-course_all">View all courses</a></li>
             </ul>
           </li>

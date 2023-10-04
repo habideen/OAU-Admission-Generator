@@ -29,7 +29,7 @@
           <x-alert />
 
           <div class="row justify-content-between">
-            @if (Auth::user()->account_type == 'Dean')
+            @if (Auth::user()->account_type != 'Dean')
               <div class="col-md-5 mb-4">
                 <form method="post" enctype="multipart/form-data" id="uploadForm">
                   @csrf

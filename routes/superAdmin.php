@@ -93,6 +93,8 @@ Route::middleware(['auth'])
             ->group(function () {
                 Route::get('add', [CourseController::class, 'addView']);
                 Route::post('add', [CourseController::class, 'add']);
+                Route::get('upload', [CourseController::class, 'uploadView']);
+                Route::post('upload', [CourseController::class, 'upload']);
                 Route::post('edit', [CourseController::class, 'edit']);
                 Route::get('list', [CourseController::class, 'list']);
                 Route::delete('delete', [CourseController::class, 'delete']);

@@ -38,13 +38,20 @@ class CourseController extends Controller
     } //add
 
 
-    public function edit(Request $request)
+
+    public function uploadView(Request $request)
     {
-        $api = (new V1CourseController)->edit($request);
+        return view('course_upload')->with([]);
+    } //uploadView
+
+
+    public function upload(Request $request)
+    {
+        $api = (new V1CourseController)->upload($request);
         $api = json_decode($api->getContent());
 
         return apiResponse($api);
-    } //edit
+    } //upload
 
 
 

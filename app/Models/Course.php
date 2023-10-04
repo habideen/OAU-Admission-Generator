@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'course',
+        'faculty_id',
+        'capacity',
+        'session_updated',
+    ];
 }
