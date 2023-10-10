@@ -36,6 +36,7 @@
             </a>
             <ul class="sub-menu" aria-expanded="false">
               <li><a href="/{{ $accountType }}/subject/add" key="t-subject_add">Add subject</a></li>
+              <li><a href="/{{ $accountType }}/subject/upload" key="t-subject_add">Upload subjects</a></li>
               <li><a href="/{{ $accountType }}/subject/list" key="t-subject_all">View all subjects</a></li>
             </ul>
           </li>

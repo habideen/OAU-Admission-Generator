@@ -35,6 +35,8 @@ Route::middleware(['auth'])
             ->group(function () {
                 Route::get('add', [SubjectController::class, 'addView']);
                 Route::post('add', [SubjectController::class, 'add']);
+                Route::get('upload', [SubjectController::class, 'uploadView']);
+                Route::post('upload', [SubjectController::class, 'upload']);
                 Route::post('edit', [SubjectController::class, 'edit']);
                 Route::get('list', [SubjectController::class, 'list']);
                 Route::delete('delete', [SubjectController::class, 'delete']);

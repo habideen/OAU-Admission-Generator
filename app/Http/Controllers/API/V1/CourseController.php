@@ -220,7 +220,7 @@ class CourseController extends Controller
             . ' of '
             . (Session::get('success_count') + Session::get('failed_count'))
             . ' uploaded. &nbsp;&nbsp;&nbsp;'
-            . Session::get('failed_count') . ' failed.';
+            . (int) Session::get('failed_count') . ' failed.';
 
         $report = $report ?
             $report . '<br><br>' . $count

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Imports\SubjectImport;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SubjectController extends Controller
 {
@@ -43,6 +46,42 @@ class SubjectController extends Controller
             'message' => 'Subject added successfully'
         ], Response::HTTP_CREATED);
     } //add
+
+
+
+
+    public function upload(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'subject_file' => ['required', 'mimes:xls,xlsx']
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Invalid input submitted',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+        Excel::import(new SubjectImport(), $request->subject_file);
+
+        $report = Session::has('report_failed') ? Session::get('report_failed') : '';
+        $count = (int) Session::get('success_count')
+            . ' of '
+            . (Session::get('success_count') + Session::get('failed_count'))
+            . ' uploaded. &nbsp;&nbsp;&nbsp;'
+            . (int) Session::get('failed_count') . ' failed.';
+
+        $report = $report ?
+            $report . '<br><br>' . $count
+            : $count;
+
+        return response([
+            'status' => 'success',
+            'message' => $report
+        ], Response::HTTP_CREATED);
+    } //upload
 
 
 
