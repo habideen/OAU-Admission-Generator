@@ -10,7 +10,6 @@ use App\Http\Controllers\Web\ELDSController;
 use App\Http\Controllers\Web\FacultyController;
 use App\Http\Controllers\Web\SessionController;
 use App\Http\Controllers\Web\SubjectController;
-use App\Http\Controllers\Web\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 /*
