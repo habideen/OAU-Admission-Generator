@@ -39,6 +39,16 @@ class CourseController extends Controller
 
 
 
+    public function edit(Request $request)
+    {
+        $api = (new V1CourseController)->edit($request);
+        $api = json_decode($api->getContent());
+
+        return apiResponse($api);
+    } //edit
+
+
+
     public function uploadView(Request $request)
     {
         return view('course_upload')->with([]);

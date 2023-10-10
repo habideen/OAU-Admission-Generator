@@ -23,9 +23,7 @@ class SessionController extends Controller
         $api = (new V1SessionController)->set($request);
         $api = json_decode($api->getContent());
 
-        return redirect()->back()->with(
-            (array) $api
-        )->withErrors($api->errors);
+        return apiResponse($api);
     } //set
 
 

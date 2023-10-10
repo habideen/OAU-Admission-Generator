@@ -51,8 +51,6 @@ class SubjectController extends Controller
         $api = (new V1SubjectController)->delete($request);
         $api = json_decode($api->getContent());
 
-        return redirect()->back()->with(
-            (array) $api
-        )->withErrors($api->errors ?? null);
+        return apiResponse($api);
     }
 }

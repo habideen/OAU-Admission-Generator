@@ -89,7 +89,7 @@ Route::middleware(['auth'])
                 Route::delete('delete', [FacultyController::class, 'delete']);
             });
 
-        Route::prefix('course')
+        Route::prefix('programme')
             ->group(function () {
                 Route::get('add', [CourseController::class, 'addView']);
                 Route::post('add', [CourseController::class, 'add']);

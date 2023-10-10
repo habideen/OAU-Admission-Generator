@@ -47,19 +47,19 @@
             </a>
             <ul class="sub-menu" aria-expanded="false">
               <li><a href="/{{ $accountType }}/faculty/add" key="t-faculty_add">Add faculty</a></li>
-              <li><a href="/{{ $accountType }}/faculty/list" key="t-faculty_all">View all facultys</a></li>
+              <li><a href="/{{ $accountType }}/faculty/list" key="t-faculty_all">View all faculties</a></li>
             </ul>
           </li>
 
           <li>
             <a href="javascript: void(0);" class="has-arrow waves-effect">
               <i class="bx bx-collection"></i>
-              <span key="t-courses">Course</span>
+              <span key="t-programmes">Programme</span>
             </a>
             <ul class="sub-menu" aria-expanded="false">
-              <li><a href="/{{ $accountType }}/course/add" key="t-course_add">Add Course</a></li>
-              <li><a href="/{{ $accountType }}/course/upload" key="t-course_upload">Upload Course</a></li>
-              <li><a href="/{{ $accountType }}/course/list" key="t-course_all">View all courses</a></li>
+              <li><a href="/{{ $accountType }}/programme/add" key="t-programme_add">Add Programme</a></li>
+              <li><a href="/{{ $accountType }}/programme/upload" key="t-programme_upload">Upload Programme</a></li>
+              <li><a href="/{{ $accountType }}/programme/list" key="t-programme_all">View all Programmes</a></li>
             </ul>
           </li>
 

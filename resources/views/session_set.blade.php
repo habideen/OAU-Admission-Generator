@@ -48,7 +48,6 @@
                 </select>
               </div>
 
-              <x-form.button :isUpdate="Request::has('faculty_id')" updateText="Update Faculty" defaultText="Save Faculty" />
               <button type="submit" class="btn btn-primary waves-effect waves-light">Update</button>
             </div>
           </form>

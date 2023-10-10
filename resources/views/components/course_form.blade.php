@@ -1,4 +1,4 @@
-<div class="text-muted mb-4 h5">Please select at least 4 subjects.</div>
+<div class="text-muted mb-4 h5">Please select at least 4 subjects combinations.</div>
 
 <div class="row mb-4">
   <x-form.select name="faculty_id" label="Faculty" :selected="old('faculty_id')" optionsType="object" :options="$faculties" objKey="id"

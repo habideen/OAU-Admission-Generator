@@ -47,7 +47,7 @@
                   <td>{{ date('d M, Y', strtotime($subject->created_at)) }}</td>
                   <td>{{ date('d M, Y', strtotime($subject->updated_at)) }}</td>
                   <td>
-                    <x-form.delete action="/subject/delete" name="id" :value="$subject->subject_code" :text="$subject->subject" />
+                    <x-form.delete action="/subject/delete" name="subject_code" :value="$subject->subject_code" :text="$subject->subject" />
                     <button type="button" class="btn btn-primary waves-effect waves-light ms-3" data-bs-toggle="modal"
                       data-bs-target="#updateSubjectModal" data-subject_code="{{ $subject->subject_code }}"
                       data-subject="{{ $subject->subject }}"><i class="bx bxs-edit"></i></button>
