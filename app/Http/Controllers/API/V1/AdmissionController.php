@@ -11,11 +11,13 @@ use App\Models\Candidate;
 use App\Models\Catchment;
 use App\Models\Course;
 use App\Models\elds;
+use App\Models\User;
 use App\Rules\SessionValidation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -89,6 +91,28 @@ class AdmissionController extends Controller
 
     public function generateAdmission(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'password' => ['required']
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Your password is required.',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+        $userPassord = User::select('password')->where('id', Auth::id())->first();
+        if (!Hash::check($request->password, $userPassord->password)) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Invalid password supplied.',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+
         $sessionUpdated = activeSession();
         $timestamp = now();
 

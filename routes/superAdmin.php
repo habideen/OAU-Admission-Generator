@@ -136,7 +136,7 @@ Route::middleware(['auth'])
                 Route::get('criteria/update', [AdmissionController::class, 'admissionCriteriaView']);
                 Route::post('criteria/update', [AdmissionController::class, 'admissionCriteria']);
                 Route::get('generate', [AdmissionController::class, 'generateAdmissionView']);
-                Route::get('calculate', [AdmissionController::class, 'generateAdmission']);
+                Route::post('calculate', [AdmissionController::class, 'generateAdmission']);
                 Route::get('statistics', [AdmissionController::class, 'admissionStat']);
                 Route::get('discretion/upload', [AdmissionController::class, 'discretionUploadView']);
                 Route::post('discretion/upload', [AdmissionController::class, 'discretionUpload']);

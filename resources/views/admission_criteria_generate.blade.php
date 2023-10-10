@@ -31,8 +31,8 @@
           <div class="row justify-content-between">
             @if (in_array(Auth::user()->account_type, ['Admin', 'Super Admin']))
               <div class="mb-4 col-md-5">
-                <a href="/{{ account_type() }}/admission/calculate" class="btn btn-success btn-lg disableBtn"
-                  aria-disabled="true">Generate Admission List</a>
+                <a class="btn btn-success btn-lg disableBtn waves-effect waves-light" data-bs-toggle="modal"
+                  data-bs-target="#generateAdmission" aria-disabled="true">Generate Admission List</a>
               </div>
               <div class="col-12 mt-2 mb-2">
                 <hr>
@@ -125,6 +125,36 @@
     <!-- container-fluid -->
   </div>
   <!-- End Page-content -->
+
+
+  <div class="modal fade" id="generateAdmission" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="generateAdmissionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="generateAdmissionLabel">Generate Admission</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-4">Please note: Any admission that exist for this session, <b>{{ activeSession() }}</b> will be deleted. This
+            includes discretion, merits, catchments, and ELDS list. Use with caution.</p>
+
+          <form method="post" action="/{{ account_type() }}/admission/calculate">
+            @csrf
+            <x-form.input name="password" label="Enter your password to continue:" type="password" required parentClass="mb-4" />
+
+            <div class="d-flex mt-5">
+              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+              <div class="ms-auto">
+                <button type="submit" class="btn btn-primary">Continue to Generate</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Static Backdrop Modal -->
 @endsection
 
 
