@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Imports\FacultyImport;
 use App\Models\Faculty;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FacultyController extends Controller
 {
@@ -41,6 +43,31 @@ class FacultyController extends Controller
             'message' => 'Faculty added successfully'
         ], Response::HTTP_CREATED);
     } //add
+
+
+
+
+    public function upload(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'faculties_file' => ['required', 'mimes:xls,xlsx']
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'status' => 'failed',
+                'message' => 'Invalid input submitted',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_EXPECTATION_FAILED);
+        }
+
+        Excel::import(new FacultyImport(), $request->faculties_file);
+
+        return response([
+            'status' => 'success',
+            'message' => sessionReport()
+        ], Response::HTTP_CREATED);
+    } //upload
 
 
 

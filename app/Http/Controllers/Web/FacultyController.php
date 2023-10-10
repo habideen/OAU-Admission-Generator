@@ -26,6 +26,22 @@ class FacultyController extends Controller
 
 
 
+    public function uploadView(Request $request)
+    {
+        return view('faculty_upload')->with([]);
+    } //uploadView
+
+
+    public function upload(Request $request)
+    {
+        $api = (new V1FacultyController)->upload($request);
+        $api = json_decode($api->getContent());
+
+        return apiResponse($api);
+    } //upload
+
+
+
     public function edit(Request $request)
     {
         $api = (new V1FacultyController)->edit($request);

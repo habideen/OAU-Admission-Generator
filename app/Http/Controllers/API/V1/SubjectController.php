@@ -66,20 +66,9 @@ class SubjectController extends Controller
 
         Excel::import(new SubjectImport(), $request->subject_file);
 
-        $report = Session::has('report_failed') ? Session::get('report_failed') : '';
-        $count = (int) Session::get('success_count')
-            . ' of '
-            . (Session::get('success_count') + Session::get('failed_count'))
-            . ' uploaded. &nbsp;&nbsp;&nbsp;'
-            . (int) Session::get('failed_count') . ' failed.';
-
-        $report = $report ?
-            $report . '<br><br>' . $count
-            : $count;
-
         return response([
             'status' => 'success',
-            'message' => $report
+            'message' => sessionReport()
         ], Response::HTTP_CREATED);
     } //upload
 

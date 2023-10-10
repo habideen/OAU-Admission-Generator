@@ -36,7 +36,7 @@
             </a>
             <ul class="sub-menu" aria-expanded="false">
               <li><a href="/{{ $accountType }}/subject/add" key="t-subject_add">Add subject</a></li>
-              <li><a href="/{{ $accountType }}/subject/upload" key="t-subject_add">Upload subjects</a></li>
+              <li><a href="/{{ $accountType }}/subject/upload" key="t-subject_upload">Upload subjects</a></li>
               <li><a href="/{{ $accountType }}/subject/list" key="t-subject_all">View all subjects</a></li>
             </ul>
           </li>
@@ -48,6 +48,7 @@
             </a>
             <ul class="sub-menu" aria-expanded="false">
               <li><a href="/{{ $accountType }}/faculty/add" key="t-faculty_add">Add faculty</a></li>
+              <li><a href="/{{ $accountType }}/faculty/upload" key="t-faculty_upload">Upload faculties</a></li>
               <li><a href="/{{ $accountType }}/faculty/list" key="t-faculty_all">View all faculties</a></li>
             </ul>
           </li>

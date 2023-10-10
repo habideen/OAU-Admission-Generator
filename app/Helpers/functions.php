@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session as FacadesSession;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 
@@ -164,5 +165,27 @@ if (!function_exists('unadmittedList')) {
       'rg_num',
       $admissionList->pluck('rg_num')
     );
+  }
+}
+
+
+
+
+
+if (!function_exists('sessionReport')) {
+  function sessionReport()
+  {
+    $report = FacadesSession::has('report_failed') ? FacadesSession::get('report_failed') : '';
+    $count = (int) FacadesSession::get('success_count')
+      . ' of '
+      . (FacadesSession::get('success_count') + FacadesSession::get('failed_count'))
+      . ' uploaded. &nbsp;&nbsp;&nbsp;'
+      . (int) FacadesSession::get('failed_count') . ' failed.';
+
+    $report = $report ?
+      $report . '<br><br>' . $count
+      : $count;
+
+    return $report;
   }
 }

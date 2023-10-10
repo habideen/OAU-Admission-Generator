@@ -215,20 +215,9 @@ class CourseController extends Controller
 
         Excel::import(new CourseImport(), $request->course_file);
 
-        $report = Session::has('report_failed') ? Session::get('report_failed') : '';
-        $count = (int) Session::get('success_count') //convert '' to 0
-            . ' of '
-            . (Session::get('success_count') + Session::get('failed_count'))
-            . ' uploaded. &nbsp;&nbsp;&nbsp;'
-            . (int) Session::get('failed_count') . ' failed.';
-
-        $report = $report ?
-            $report . '<br><br>' . $count
-            : $count;
-
         return response([
             'status' => 'success',
-            'message' => $report
+            'message' => sessionReport()
         ], Response::HTTP_CREATED);
     } //upload
 

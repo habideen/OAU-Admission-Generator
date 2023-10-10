@@ -52,6 +52,8 @@ Route::middleware(['auth'])
             ->group(function () {
                 Route::get('add', [FacultyController::class, 'addView']);
                 Route::post('add', [FacultyController::class, 'add']);
+                Route::get('upload', [FacultyController::class, 'uploadView']);
+                Route::post('upload', [FacultyController::class, 'upload']);
                 Route::post('edit', [FacultyController::class, 'edit']);
                 Route::get('list', [FacultyController::class, 'list']);
                 Route::delete('delete', [FacultyController::class, 'delete']);
